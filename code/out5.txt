@@ -1,0 +1,2 @@
+Acceptance rate = 0.764
+Effective sample size = 51.65653

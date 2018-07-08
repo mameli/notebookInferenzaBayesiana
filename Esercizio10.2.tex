@@ -1,0 +1,76 @@
+\subsection*{Esercizio 10.2 Hoff} % (fold)
+
+Nesting success: younger male sparrows may or may not nest during a mating season, perhaps depending on their physical characteristics. Researchers have recorded the nesting success of 43 young male sparrows of the same age, as well as their wingspan, and the data appear in the file \texttt{msparrownest.dat}. Let $Y_i$ be the binary indicator that sparrow $i$ successfully nests, and let $x_i$ denote their wingspan. Our model for $Y_i$ is $logit\theta(Y_i = 1|\alpha, \beta, x_i)) = \alpha + \beta x_i$, where the logit function is given by $logit \theta = log\left[\frac{\theta}{1-\theta}\right]$.
+\begin{enumerate}
+  \item Write out the joint sampling distribution  $\prod_{i=1}^{n}p(y_i | \alpha, \beta, x_i)$ and simplify as much as possible.
+  \item Formulate a prior probability distribution over $\alpha$ and $\beta$ by considering the range of $Pr(Y = 1|\alpha,\beta,x)$ as x ranges over $10$ to $15$, the approximate range of the observed wingspans.
+  \item Implement a Metropolis algorithm that approximates $p(\alpha, \beta|\mathbf{y}, \mathbf{x})$. Adjust the proposal distribution to achieve a reasonable acceptance rate, and run the algorithm long enough so that the effective sample size is at least $1,000$ for each parameter.
+  \item Compare the posterior densities of $\alpha$ and $\beta$ to their prior densities.
+  \item Using output from the Metropolis algorithm, come up with a way to make a confidence band for the following function $f_{\alpha\beta}(x)$ of wingspan:
+  $$f_{\alpha\beta}(x) = \frac{e^{\alpha + \beta x}}{1+e^{\alpha + \beta x}}$$
+  where $\alpha$ and $\beta$ are the parameters in your sampling model. Make a plot of such a band.
+\end{enumerate}
+
+
+\textbf{Svolgimento}:
+\bigskip
+
+L'esercizio ha come obiettivo principale quello di studiare la relazione tra laprobabilità di nidificare e l'ampiezza delle ali per un gruppo di $43$ uccellini maschi della stessa età. Il setting del modello è il seguente:
+$$Y_i = \begin{cases} 1, & \mbox{se l'uccellino } i\mbox{ nidifica} \\ 0, & \mbox{altrimenti } \end{cases}; \quad x_i = \text{ampiezza dell'uccellino } i; \quad i = 1, \dots, 43$$
+La verosomiglianza per ogni singola osservazione è pertanto una Bernoulli:
+$$p(y_i | p_i) = p_i^{y_i}(1-p_i)^{1-y_i}$$
+Studiamo la relazione tra la probabilità di nidificare e l'ampiezza delle ali con il modello logistico (siamo quindi nell'ambito dei modelli lineari generalizzati):
+$$g(p_i) = logit(p_i) = log\left(\frac{p_i}{1-p_i}\right) = \eta_i = \alpha + \beta x_i$$
+pertanto
+$$g^{-1}(\eta_i) = p_i = \frac{e^{\eta_i}}{1+e^{\eta_i}} = \frac{e^{\alpha + \beta x_i}}{1+e^{\alpha + \beta x_i}}$$
+\subsubsection*{Parte a} 
+Scriviamo la verosomiglianza secondo il modello appena descritto, quindi come funzione di $\alpha$ e $\beta$ (ricordiamo l'indipendenza condizionata a tali parametri):
+\begin{gather}
+\nonumber\mathcal{L}(\alpha;\beta;\mathbf{y};\mathbf{X}) = p(\mathbf{y}|\alpha, \beta, \mathbf{X}) = \prod_{i=1}^{n}p(y_i |\alpha, \beta, \mathbf{x_i}) = \prod_{i=1}^{n}\left[\left(\frac{e^{\eta_i}}{1+e^{\eta_i}}\right)^{y_i}\left(\frac{1}{1+e^{\eta_i}}\right)^{1-y_i}\right] \\
+\nonumber=\prod_{i=1}^{n} \frac{e^{y_i\eta_i}}{1+e^{\eta_i}} = \prod_{i=1}^{n}(e^{y_i\eta_i} - log(1-e^{\eta_i})) = e^{\sum_{i=1}^{n}[y_i\eta_i - log(1+e^{\eta_i})]} \\
+\nonumber=e^{\sum_{i=1}^{n}[y_i(\alpha+\beta x_i) - log(1+e^{\alpha+\beta x_i})]}
+\end{gather}
+Potevamo in maniera analoga procedere passando direttamente attraverso la scrittura delle singole verosomiglianze nella forma della famiglia esponenziale in questo modo:
+$$p(y_i|p_i) = p_i^{y_i}(1-p_i)^{1-y_i} = e^{y_i log(\frac{p_i}{1-p_i}+log(1-p_i))}$$
+pertanto
+\begin{gather}
+\nonumber \prod_{i=1}^{n} p(y_i|p_i) = \prod_{i=1}^{n} e^{\sum_{i=1}^{n}[y_i \eta_i + log(\frac{1}{1+\eta_i})]} = e^{\sum_{i=1}^{n}[y_i \eta_i + log(1+\eta_i)]}\\
+\nonumber e^{\sum_{i=1}^{n}[y_i(\alpha+\beta x_i) - log(1+e^{\alpha+\beta x_i})]}
+\end{gather}
+\subsubsection*{Parte b} % (fold)
+Possiamo formulare la a priori per $\alpha$ e $\beta$ in molti modi, due dei quali sono i seguenti:
+\begin{enumerate}
+  \item \textbf{soggettivamente:} a priori pensiamo che la probabilità di nidificare sia alta e che vari tra $[0.5, 0.9]$; sapendo inoltre che il campo di variazione della covariata è $[10, 15]$, troviamo il range di $\alpha$ e $\beta$ che sia compatibile conq uello della probabilità e in base ad esso formuliamo la prior sui parametri. In dettaglio: Pensiaom che $p=Pr(Y=1 | \alpha, \beta, \mathbf{x}) \in [0.5, 0.9]$ e quindi che $logit(p) = log\left(\frac{p}{1-p}\right) = \alpha + \beta x \in [0, 2.2]$. Si ha il seguente sistema di disequazioni:
+  $$\begin{cases} \alpha+\beta x \geq 0 \\ \alpha + \beta x \leq 2.2 \end{cases}$$
+  Troviamo il range di $\alpha$ e di $\beta$ risolvendo il sistema per il valore minimo e per quello massimo di x:
+   $$\begin{cases} \alpha+10\beta = 0 \\ \alpha +  15\beta = 2.2 \end{cases} \begin{cases}\beta = 0.44 \\ \alpha = -4.4\end{cases} \begin{cases} \alpha+15\beta = 0 \\ \alpha +  10\beta = 2.2 \end{cases} \begin{cases}\beta = -0.44 \\ \alpha = -4.4\end{cases}$$
+   Quindi $\beta \in [-0.44, 0.44]$ e $\alpha \in [-4.4 6.6]$.
+   Ipotizzando come prior per $\alpha$ e $\beta$ una normale (soluzione più naturale dal momento che in ogni caso non è possibile fare inferenza n+ in forma chiusa nè tramite Gibbs sampler ma con un algoritmo Metropolis-Hastings), specifichiamo come vettore delle medie il centroide $(\alpha_0, \beta_o)^T$ = $(1.1, 0)^T$.
+   Resta da specificare la matrice di varianza e covarianza. Innanzitutto, dal momento che i valori di $\alpha$ e $\beta$ che sono contemporaneamente massimi e contemporaneamente minimi generano valori del logit fuori dal range a priori, ipotizziamo covarianza nulla tra i due parametri in modo che i valori appena citati siano meno probabili: $\sigma_{\alpha\beta} = 0$. Per specificare le varianze $\sigma_{\alpha}^2$ e $\sigma_{\beta}^2$ seguiamo la logica degli intervalli di confidenza: date le distribuzioni normali di $\alpha$ e $\beta$, sappiamo che:
+   $$P(\alpha_0 - 2\sigma_\alpha \leq x \leq \alpha_0 + 2\sigma_\alpha) \simeq 0.95; \qquad P(\beta_0 - 2\sigma_\beta \leq x \leq \beta_0 + 2\sigma_\beta) \simeq 0.95$$
+   Quindi cerchiamo le deviazioni standard in modo che
+   $$2\sigma_\alpha =  \frac{6.6 - (-4.4)}{2} = 5.5; \qquad 2\sigma_\beta = 0.44$$
+   e si ha che
+   $$\sigma_\alpha 2.75; \qquad \sigma_beta = 0.22$$
+   Per tutto quanto detto, la prior formulata considerando il range di $P(Y=1 | \alpha, \beta, x)$ al variare di $x$ in $[10, 15]$ è:
+   $$\binom{\alpha}{\beta} \sim N_2\left(\binom{\alpha_0}{\beta_0},
+   \begin{pmatrix}
+    \sigma^2_\alpha & \sigma^2_{\alpha\beta} \\
+    \sigma^2_{\alpha\beta} & \sigma^2_\beta
+
+    \end{pmatrix}\right) \equiv N_2 \left(\binom{1.1}{0} \begin{pmatrix} 2.75^2 & 0 \\ 0 & 0.22^2 \end{pmatrix}\right)$$
+
+    \item \textbf{In maniera non informativa:} ricaviamo il range di $p$ in base alla proproporzione osservata e all'appprossimazione alla distribuzione normale della porporzione campionaria. In questo caso $\hat p = 0.55$; poiché $\hat p \approx N(p, \frac{p(1-p)}{n})$, ragionando sempre secondo la logica degli intervalli di confidenza, ipotizziamo che il campo di variazione di $p$ sia tra $\hat p - 2 \sqrt{\frac{\hat p (1-\hat p)}{n}} = 0.55 - 2 \sqrt{\frac{0.55 \cdot 0.45}{43}} \approx 0.47$ e $\hat p + 2 \sqrt{\frac{\hat p (1-\hat p)}{n}} = 0.55 + 2 \sqrt{\frac{0.55 \cdot 0.45}{43}} \approx 0.62$. Ponendo quindi $p \in [0.47, 0.62]$, impostiamo la prior per $\alpha$ e $\beta$ secondo la logica seguita al punto precedente. Non svogliamo tutti i calcoli perché si è scelto di lavorare con la prior individuata al punto 1.
+\end{enumerate}
+Rispondiamo adesso alle altre richieste dell'esercizio in R. Di seguito il codice con output e commenti.
+\lstinputlisting[style=R]{code/code1.R}
+\redverb{out1.txt}
+\lstinputlisting[style=R]{code/code2.R}
+\redverb{out2.txt}
+\lstinputlisting[style=R]{code/code3.R}
+\redverb{out3.txt}
+\lstinputlisting[style=R]{code/code4.R}
+\redverb{out4.txt}
+\lstinputlisting[style=R]{code/code5.R}
+\redverb{out5.txt}
+

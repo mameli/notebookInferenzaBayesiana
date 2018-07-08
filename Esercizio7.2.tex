@@ -1,0 +1,78 @@
+\subsection{Esercizio 7.2 - Hoff}
+
+Unit information prior: Letting $ \Psi = \Sigma^{-1} $, show that a unit information prior for $(\boldsymbol{\theta},\Psi)$ is given by $\boldsymbol{\theta}|\Psi \sim $ multivariate normal $(\bar{\textbf{y}}, \Psi^{-1})$ and $\Psi \sim Wishart(p+1, \textbf{S}^{-1})$, where $\textbf{S} = \sum(\textbf{y}_i-\bar{\textbf{y}})(\textbf{y}_i-\bar{\textbf{y}})^{T}/n$. This can be done by mimicking the procedure outlined in Exercise 5.6 as follows:
+\begin{enumerate}[label=\alph*)]
+\item Reparameterize the multivariate normal model in terms of the precision matrix $\Psi = \Sigma^{-1}$. Write out the resulting log likelihood, and find a probability density $p_{U}(\boldsymbol{\theta},\Psi) = p_{U}(\boldsymbol{\theta}|\Psi)p_{U}(\Psi)$ such that $\log p(\boldsymbol{\theta},\Psi) = l(\boldsymbol{\theta},\Psi|\textbf{Y})/n+c$, where \textit{c} does not depend on $\boldsymbol{\theta}$ or $\Psi$.\\
+Hint: Write $(\textbf{y}_i - \boldsymbol{\theta})$ as $(\textbf{y}_i - \bar{\textbf{y}}+\bar{\textbf{y}} - \boldsymbol{\theta})$, and note that $\sum\textbf{a}_i^T\textbf{Ba}_i$ can be written as tr(\textbf{AB}), where $\textbf{A} = \sum\textbf{a}_i\textbf{a}_i^T$.
+\item Let $p_U(\Sigma)$ be the inverse-Wishart density induced by $p_U(\Psi)$. 
+Obtain a density
+$p_U(\boldsymbol{\theta},\Sigma|\textbf{y}_i,...,\textbf{y}_n)) \propto p_U(\boldsymbol{\theta}|\Sigma)p_U(\boldsymbol{\Sigma})p(\textbf{y}_i,...,\textbf{y}_n|\boldsymbol{\theta},\Sigma)$. 
+Can this be interpreted as a posterior distribution for $\theta$ and $\Sigma$?
+\end{enumerate}
+\textbf{Svolgimento}\\
+
+a) La distribuzione di probabilità di una normale multivariata è 
+\begin{align*}
+p(\textbf{Y}|\Sigma,\theta) = (2\pi)^{-1/2}|\Sigma|^{-1/2}\exp\left\{-1/2(\textbf{y}-\boldsymbol{\theta})^T\Sigma^{-1}(\textbf{y}-\boldsymbol{\theta})\right\}
+\end{align*}
+e riparametrizzando con $\Psi = \Sigma^{-1} $ avremo
+\begin{align*}
+p(\textbf{Y}|\Psi,\theta) = (2\pi)^{-p/2}|\Psi|^{1/2}\exp\left\{-1/2(\textbf{y}-\boldsymbol{\theta})^T\Psi(\textbf{y}-\boldsymbol{\theta})\right\}
+\end{align*}
+
+con relativa likelihood
+\begin{align*}
+\mathcal{L}(\textbf{Y}|\Psi,\theta) &= \prod_{i=1}^n(2\pi)^{-p/2}|\Psi|^{1/2}\exp\left\{-\frac{1}{2}(\textbf{y}_i-\boldsymbol{\theta})^T\Psi(\textbf{y}_i-\boldsymbol{\theta})\right\}\\
+&\propto |\Psi|^{n/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n(\textbf{y}_i-\boldsymbol{\theta})^T\Psi(\textbf{y}_i-\boldsymbol{\theta})\right\}
+\end{align*}
+
+come suggerito dall'esercizio ci calcoliamo $\log p(\boldsymbol{\theta},\Psi) = l(\boldsymbol{\theta},\Psi|\textbf{Y})/n+c$
+
+\begin{align*}
+\log(\mathcal{L}(\textbf{Y}|\Psi,\theta)) &=  \frac{n}{2}\log|\Psi|\left\{-\frac{1}{2}\sum_{i=1}^n(\textbf{y}_i-\boldsymbol{\theta})^T\Psi(\textbf{y}_i-\boldsymbol{\theta})\right\}\\
+\log(\mathcal{L}(\textbf{Y}|\Psi,\theta))/n + c &=  \frac{1}{2}\log|\Psi|\left\{-\frac{1}{2n}\sum_{i=1}^n(\textbf{y}_i-\boldsymbol{\theta})^T\Psi(\textbf{y}_i-\boldsymbol{\theta})\right\} + c
+\end{align*}
+
+Usando il suggerimento proposto dal testo avremo
+
+\begin{align*}
+-\frac{1}{2n}\sum_{i=1}^n(\textbf{y}_i-\boldsymbol{\theta})^T\Psi(\textbf{y}_i-\boldsymbol{\theta}) &= -\frac{1}{2n}\sum_{i=1}^n(\textbf{y}_i - \bar{\textbf{y}}+\bar{\textbf{y}} - \boldsymbol{\theta})^T\Psi(\textbf{y}_i - \bar{\textbf{y}}+\bar{\textbf{y}} - \boldsymbol{\theta})\\
+&=-\frac{1}{2n}\sum_{i=1}^n\Big[(\textbf{y}_i - \bar{\textbf{y}})^T\Psi(\textbf{y}_i - \bar{\textbf{y}})\Big] -\frac{\cancel{n}}{2\cancel{n}} (\theta - \bar{\textbf{y}})^T\Psi(\theta- \bar{\textbf{y}})\\
+&=-\frac{1}{2}tr(\textbf{S}\Psi)-\frac{1}{2}tr(\textbf{S}_\theta\Psi)
+\end{align*}
+
+Quindi la log likelihood calcolata al passo precedente diventerà
+
+\begin{align*}
+\log(\mathcal{L}(\textbf{Y}|\Psi,\theta))/n + c &=  \frac{1}{2}\log|\Psi|-\frac{1}{2}tr(\textbf{S}\Psi)-\frac{1}{2}tr(\textbf{S}_\theta\Psi) + c
+\end{align*}
+
+e tornando all'esponente avremo
+\begin{align*}
+\mathcal{L}(\textbf{Y}|\Psi,\theta)/n + c \propto  \underbrace{\exp\{|\Psi|\}-\exp\Big\{\frac{1}{2}tr(\textbf{S}\Psi)\Big\}}_\text{ $\sim$  Wishart($\Psi|$ k+2, $\textbf{S}^{-1}$)}
+\underbrace{-\exp\Big\{\frac{1}{2}tr(\textbf{S}_\theta\Psi))\Big\}}_\text{ $\sim NM(\bar{\textbf{y}},\Psi^{-1})$}
+\end{align*}
+
+Abbiamo quindi trovato che $p_{U}(\boldsymbol{\theta},\Psi) = p_{U}(\boldsymbol{\theta}|\Psi)p_{U}(\Psi)$ dove 
+\begin{align*}
+p_{U}(\Psi) &= Wishart(\Psi| k+2, \textbf{S}^{-1}) \\ p_{U}(\boldsymbol{\theta}|\Psi) &= NM(\bar{\textbf{y}},\Psi^{-1})
+\end{align*}
+
+
+b) Da ciò che abbiamo appena calcolato al punto a), se volessimo tornare a $p_U(\Sigma)$ come suggerito dal testo avremo un Inverse Wishart e le relative distribuzioni di probabilità saranno
+
+\begin{align*}
+p_{U}(\Sigma) &\propto |\Sigma|^{-(p+k)/2}\exp\Big\{-\frac{1}{2}tr(S\Sigma^{-1})\Big\}\\
+p_{U}(\boldsymbol{\theta}|\Sigma) &\propto \exp\Big\{-\frac{1}{2}(\boldsymbol{\theta} - \bar{\textbf{y}})^T\Sigma^{-1}(\boldsymbol{\theta}- \bar{\textbf{y}})\Big\}\\
+p(\textbf{y}_i,...,\textbf{y}_n|\boldsymbol{\theta},\Sigma) &\propto |\Sigma|^{-n/2}\exp\Big\{-\frac{1}{2}\sum_{i=1}^n(\textbf{y}_i-\boldsymbol{\theta})^T\Sigma^{-1}(\textbf{y}_i-\boldsymbol{\theta})\Big\} \\
+&\propto |\Sigma|^{-n/2}\exp\Big\{-\frac{1}{2}tr(S_1\Sigma^{-1})\Big\}
+\end{align*}
+
+volendo a questo punto trovare la densità chiesta, $p_U(\boldsymbol{\theta},\Sigma|\textbf{y}_i,...,\textbf{y}_n)) \propto p_U(\boldsymbol{\theta}|\Sigma)p_U(\boldsymbol{\Sigma})p(\textbf{y}_i,...,\textbf{y}_n|\boldsymbol{\theta},\Sigma)$, avremo
+
+\begin{align*}
+p_U(\boldsymbol{\theta},\Sigma|\textbf{y}_i,...,\textbf{y}_n)) &\propto |\Sigma|^{-n/2}|\Sigma|^{-(p+k)/2}\exp\Big\{-\frac{1}{2}tr[(S_1+S)\Sigma^{-1}] \Big\} \exp\Big\{-\frac{1}{2}(\boldsymbol{\theta} - \bar{\textbf{y}})^T\Sigma^{-1}(\boldsymbol{\theta}- \bar{\textbf{y}})\Big\}\\
+&\propto \underbrace{|\Sigma|^{-\frac{n+p+k+1}{2}}\exp\Big\{-\frac{1}{2}tr[(S_1+S)\Sigma^{-1}] \Big\}}_\text{$\sim Inv-Wishart(n+k,(S+S_1)^{-1})$} \underbrace{|\Sigma|^{-1/2}\exp\Big\{-\frac{1}{2}(\boldsymbol{\theta} - \bar{\textbf{y}})^T\Sigma^{-1}(\boldsymbol{\theta}- \bar{\textbf{y}})\Big\}}_\text{$\sim N(\bar{y},\Sigma)$}
+\end{align*}
+
+che può essere interpretata come la distribuzioni a posteriori di $\boldsymbol{\theta}$ e $\Sigma$.

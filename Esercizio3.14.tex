@@ -1,0 +1,263 @@
+\subsection{Esercizio 3.14 - Hoff}
+
+Unit information prior: Let $Y_1,...,Y_n \sim $ i.i.d.$p(y|\theta)$. Having
+observed the values $Y_1=y_1,...,Y_n=y_n$, the \textit{log likelihood} is given
+by $l(\theta|\textbf{y})=\sum\log p(y_{i}|\theta)$, and the value $\hat{\theta}$ of
+$\theta$ that maximizes $l(\theta|\textbf{y})$ is called the \textit{maximum
+likelihood estimator}. The negative of the curvature of the loglikelihood,
+$J(\theta)=-\frac{\partial^{2}l(\theta| \textbf{y})}{\partial\theta^{2}}$, describes
+the precision of the MLE $\hat{\theta}$ and is called the \textit{observed
+Fisher information}. For situations in which it is difficult to quantify
+prior information in terms of a probability distribution, some have
+suggested that the \textquotedblleft prior\textquotedblright{} distribution
+be based on the likelihood, for example, by centering the prior distribution
+around the MLE $\hat{\theta}$. To deal with the fact that the MLE
+is not really prior information, the curvature of the prior is chosen
+so that it has only \textquotedblleft one \textit{n}th\textquotedblright{}
+as much information as the likelihood, so that $-\frac{\partial^{2}\log p(\theta)}{\partial\theta^{2}}=\frac{J(\theta)}{n}$. Such
+a prior is called a \textit{unit information prior} (Kass and Wasserman, 1995;
+Kass and Raftery, 1995), as it has as much information
+as the average amount of information from a single observation. The
+unit information prior is not really a prior distribution, as it is
+computed from the observed data. However, it can be roughly viewed
+as the prior information of someone with weak but accurate prior information. 
+
+\begin{enumerate}[label=\alph*)]
+\item Let $Y_1, . . . , Y_n \sim $ i.i.d. binary($\theta$). Obtain the MLE $\hat{\theta}$
+and J($\hat{\theta}$)/n.
+
+\item Find a probability density $p_U(\theta)$ such that $\log p_U(\theta) = \frac{l(\theta| \textbf{y})}{n}+c$, where $c$ is a constant that does not depend on $\theta$. Compute the information $-\frac{\partial^{2}\log p(\theta)}{\partial\theta^{2}}$ of this density. 
+
+\item Obtain a probability density for $\theta$ that is proportional to $p_U(\theta) \times p(y_1,\cdots,y_n|\theta)$. Can this be considered a posterior distribution for $\theta$?
+
+\item Repeat a), b) and c) but with $p(y|\theta)$ being the Poisson distribution.
+
+\end{enumerate}
+
+\textbf{Svolgimento}
+\\
+\bigskip
+
+a) Nel caso analizzato la funzione di densità sarà una Bernuoulli:
+\begin{center}
+$p(y|\theta)=\theta^{y}(1-\theta)^{1-y}$
+\end{center}
+
+e la relativa funzione di verosimigliana per un campione di n osservazioni i.i.d. sarà 
+\begin{align*}
+\mathcal{L}(\theta: \textbf{y})=\prod_{i=1}^n\theta^{y_i}(1-\theta)^{1-y_i}
+\end{align*}
+
+Calcolandonde il logaritmo otterremo la funzione di log-verosomiglianza seguente
+\begin{align*}
+l(\theta:\textbf{y})=\left(\sum_{i=1}^n y_{i}\right)ln(\theta)+\left(n-\sum_{i=1}^n y_{i}\right)ln(1-\theta)
+\end{align*}
+
+Calcoliamo adesso lo stimatore di massima verosomiglianza per $\theta$ che indicheremo con $\hat{\theta}$, ottenuto ponendo a zero la derivata prima della log-verosomiglianza, ovvero
+\begin{align*}
+\frac{\partial l(\theta;\textbf{y})}{\partial\theta}&=\frac{\sum_{i=1}^{n}y_i}{\theta}-\frac{n-\sum_{i=1}^{n}y_i}{1-\theta}= 0\\
+&= \frac{\sum_{i=1}^{n}y_i -
+\cancel{\theta\sum_{i=1}^{n}y_i} -
+n\theta +
+\cancel{\theta\sum_{i=1}^{n}y_i}}
+{\theta(1-\theta)} = 0 \\
+&=\frac{\sum_{i=1}^{n}y_i}{n} = \hat{\theta} = MLE
+\end{align*}
+
+Adesso dobbiamo calcolarci l'informazione osservata di Fisher, ovvero $J(\hat{\theta}) = -\frac{\partial^2 l(\theta;\textbf{y})}{\partial\theta^2}$, dove al posto di $\theta$ sostituiamo $\hat{\theta}$ per ottenere una misura dell'informazione nel punto di massima verosomiglianza.
+\begin{align*}
+\frac{\partial^2 l(\theta;\textbf{y})}{\partial\theta^2} &= -\frac{\sum_{i=1}^{n}y_i}{\theta^2}+\frac{n-\sum_{i=1}^{n}y_i}{(1-\theta)^2}\\
+J(\theta) = -\frac{\partial^2 l(\theta;\textbf{y})}{\partial\theta^2} &= \frac{\sum_{i=1}^{n}y_i}{\theta^2}-\frac{n-\sum_{i=1}^{n}y_i}{(1-\theta)^2}
+\end{align*}
+
+e sostituendo $\theta$ col nostro stimatore di massima verosomiglianza $\hat{\theta}$ avremo
+\begin{align*}
+J(\hat{\theta}) = n\left(\frac{\hat{\theta}}{\hat{\theta^2}} - 
+\frac{1- \hat{\theta}}{(1- \hat{\theta})^2}\right)
+= n\left(\frac{1}{\hat{\theta^2}} -
+\frac{ 1 }{1- \hat{\theta}}\right)
+\end{align*}
+
+L'esercizio chiede di calcolare $\frac{J(\hat{\theta})}{n}$ ovvero l'informazione associata alla unit information prior. Otteremo quindi
+
+\begin{align*}
+\frac{J(\hat{\theta})}{n} = \left(\frac{1}{\hat{\theta^2}} -
+\frac{ 1 }{1- \hat{\theta}}\right)
+\end{align*}
+
+\bigskip
+b) L'esercizio richiede che
+\begin{align*}
+\log p_U(\theta) = \frac{l(\theta|y)}{n}+c
+\end{align*}
+
+ovvero 
+\begin{align*}
+\log p_U(\theta)  = \frac{\left(\sum_{i=1}^n y_i\right)ln(\theta)}{n}+\frac{\left(n-\sum_{i=1}^n y_i\right)ln(1-\theta)}{n}
+\end{align*}
+
+e riportandosi all'esponente della formula appena scritta otteremo la unit information prior:
+
+\begin{align*}
+p_U(\theta)  &= \theta^\frac{\sum_{i=1}^n y_i}{n} 
+(1-\theta)^{1-\frac{\sum_{i=1}^n y_i}{n}} 
+e^c\\
+&\sim Beta(\hat{\theta} + 1, 2 - \hat{\theta})
+\end{align*}
+
+A questo punto per calcolare l'informazione di Fisher come richiesto dall'esercizio dobbiamo come primo passo calcolare la derivata prima:
+
+\begin{align*}
+\frac{\partial p_U(\theta)}{\partial\theta} &= \frac{\sum_{i=1}^{n}y_i}{n\theta}-
+\frac{n-\sum_{i=1}^{n}y_i}{n(1-\theta)}
+\end{align*}
+
+Poi la derivata seconda:
+
+\begin{align*}
+\frac{\partial^2 p_U(\theta)}{\partial\theta^2} &= -\frac{\sum_{i=1}^{n}y_i}{n\theta^2}+
+\frac{n-\sum_{i=1}^{n}y_i}{n(1-\theta)^2}
+\end{align*}
+
+Cambiando di segno alla derivata seconda otteremo l'informazione di Fisher:
+
+\begin{align*}
+J_U(\theta) = -\frac{\partial^2 p_U(\theta)}{\partial\theta^2} &= \frac{\sum_{i=1}^{n}y_i}{n\theta^2} -
+\frac{n-\sum_{i=1}^{n}y_i}{n(1-\theta)^2} = \frac{J(\theta)}{n}
+\end{align*}
+
+Notiamo che l'informazione di Fisher per la unit information prior $J_U(\theta)$ non è altro che un \textit{n}-esimo dell'informazione di Fisher per l'intero campione $J(\theta)$, quindi la distribuzione ottenuta rispetta la proprietà desiderata.
+
+\bigskip
+c)  L'esercizio chiede di trovare una densità di probabilità per $\theta$ che sia proporzionale a $p_U(\theta) \times p(y_1,\cdots,y_n|\theta)$. Procediamo quindi a svolgere i calcoli richiesti nell'intento di riconoscere il kernel di una distribuzione nota:
+
+\begin{align*}
+p_U(\theta) \times \mathcal{L}(\theta;\textbf{y}) &\propto
+\theta^\frac{\sum_{i=1}^n y_i}{n} 
+(1-\theta)^{1-\frac{\sum_{i=1}^n y_i}{n}} 
+\theta^ {\sum_{i=1}^n y_i}
+(1-\theta)^{n-\sum_{i=1}^n y_i}\\
+&\propto \theta^{\sum_{i=1}^n y_i(1+\frac{1}{n}) }
+(1-\theta)^{(n+1) - \sum_{i=1}^n y_i (1+\frac{1}{n}) }
+\end{align*}
+
+Riconosciamo il kernel di una Beta, ovvero:
+
+
+\begin{align*}
+p_U(\theta) \times \mathcal{L}(\theta;\textbf{y}) &\propto 
+Beta
+\left( 
+\sum_{i=1}^n y_i\left(1+\frac{1}{n}\right)  + 1, 
+(n+2) - \sum_{i=1}^n y_i \left(1+\frac{1}{n}\right) 
+\right)
+\end{align*}
+
+Se avessimo lavorato con una a priori classica potremmo  concludere che:
+
+\begin{align*}
+p_U(\theta|\textbf{y}) =
+Beta
+\left( 
+\sum_{i=1}^n y_i\left(1+\frac{1}{n}\right)  + 1, 
+(n+2) - \sum_{i=1}^n y_i \left(1+\frac{1}{n}\right) 
+\right)
+\end{align*}
+
+ma nel nostro caso non abbiamo usato una vera e propria \textit{a priori}, bensì una \textit{unit information prior} che per sua definizione viene ricavata dal campione e non da una pregressa conoscenza del fenomeno analizzato come impone la definizione di ``a priori" della statistica bayesiana. Possiamo però interpretare questa unit information prior, come l’informazione a priori di una persona che è riuscita a centrare la sua distribuzione sullo stimatore di massima verosimiglianza, ma che è molto insicuro di questa sua informazione (per questo dividiamo l’informazione di Fisher per n in modo da aumentarne la varianza). Solo se applichiamo questo ragionamento possiamo considerare la distribuzione trovata come una a posteriori.
+
+\bigskip
+d) Ripetiamo l'intero esercizio ma considerando $p(y|\theta)$ come una distribuzione di Poisson, ovvero:
+
+\begin{align*}
+p(y|\theta) = \frac{e^{-\theta}\theta^y}{y!}
+\end{align*}
+
+La relativa verosomiglianza per un campione i.i.d. sarà
+
+\begin{align*}
+p(y|\theta) = \prod_{i=1}^n \frac{e^{-\theta}\theta^{y_i}}{y_i!}
+\end{align*}
+
+e la log-likelihood
+
+\begin{align*}
+l(\theta;\textbf{y}) = -n\theta + \left(\sum_{i=1}^n y_i \right)ln(\theta)-ln\prod_{i=1}^n y_i!.
+\end{align*}
+
+Calcoliamo come fatto in precedenza lo stimatore di massima verosomiglianza $\hat{\theta}$:
+
+\begin{align*}
+\frac{\partial l(\theta; \textbf{y})}{\partial\theta} = -n + \frac{\sum_{i=1}^n y_i}{\theta}
+\end{align*}
+
+Ponendola uguale a zero avremo:
+
+\begin{align*}
+ -n + \frac{\sum_{i=1}^n y_i}{\theta} &= 0\\
+ \frac{\sum_{i=1}^n y_i}{\theta} &= \hat{\theta} = MLE
+\end{align*}
+
+Procediamo adesso al calcolo dell'informazione osservata di FIsher $J(\hat{\theta})$ e quindi alla derivata seconda:
+
+\begin{align*}
+\frac{\partial^2 l(\theta; \textbf{y})}{\partial\theta^2} = - \frac{\sum_{i=1}^n y_i}{\theta^2}
+\end{align*}
+
+Sostituendo a $\theta$ lo stimatore di massima verosomiglianza $\hat{\theta}$ avremo l'informazione osservata:
+
+
+\begin{align*}
+J(\hat{\theta}) = \frac{n}{\hat{\theta}}
+\end{align*}
+
+L'esercizio chiede di calcolare $\frac{J(\hat{\theta})}{n}$ ovvero un \textit{n}-esimo dell'informazione osservata di Fisher relativa al campione, che corrisponde all'informazione associata alla unit information prior:
+
+\begin{align*}
+\frac{J(\hat{\theta})}{n} = \frac{1}{\hat{\theta}}
+\end{align*}
+
+Calcoliamo adesso come chiesto 
+
+\begin{align*}
+\log p_U(\theta) &= \frac{l(\theta|y)}{n}+c\\
+ &= -\theta + \frac{\sum_{i=1}^n y_i}{n} ln(\theta) \underbrace{ -\frac{ln(\prod_{i=1}^n y_i)}{n} + c }_\text{$c^*$}
+\end{align*}
+
+Riportandosi all'esponente avremo:
+\begin{align*}
+p_U(\theta) &= e^{-\theta}\theta^{\frac{\sum_{i=1}^n y_i}{n}}e^{c^*}\\
+&\sim Gamma(\hat{\theta}+1,1)
+\end{align*}
+
+Per calcolare l'informazione di Fisher dobbiamo calcolare come primo passo la derivata prima:
+
+\begin{align*}
+\frac{\partial p_U(\theta)}{\partial\theta} = -1 + \frac{\sum_{i=1}^n y_i}{n\theta}
+\end{align*}
+
+Di conseguenza, la derivata seconda sara:
+
+\begin{align*}
+\frac{\partial^2 p_U(\theta)}{\partial\theta^2} = - \frac{\sum_{i=1}^n y_i}{n\theta^2}
+\end{align*}
+
+Possiamo adesso calcolare la unit information prior come richiesto
+
+\begin{align*}
+J_U(\theta)= - \frac{\partial^2 p_U(\theta)}{\partial\theta^2} = \frac{\sum_{i=1}^n y_i}{n\theta^2} = \frac{J(\theta)}{n}
+\end{align*}
+
+Procedendo adesso ad indentificare una distribuzione di densità nota per $  p_U(\theta) \times \mathcal{L}(\theta;\textbf{y}) $ avremo 
+
+\begin{align*}
+p_U(\theta) \times \mathcal{L}(\theta;\textbf{y}) &\propto e^{-\theta} \theta  ^ {\frac{\sum_{i=1}^n y_i}{n}} e^{-n\theta}\theta^{\sum_{i=1}^n y_i}\\
+&\propto e^{-\theta(1+n)}\theta^{\sum_{i=1}^n y_i (1+\frac{1}{n})}\\
+&\sim Gamma\left(\sum_{i=1}^n y_i\left(1 + \frac{1}{n}\right) + 1, (n+1)\right)
+\end{align*}
+
+Possiamo quindi concludere che la ``a posteriori" di $p_U(\theta|\textbf{y})$ sia
+
+\begin{align*}
+p_U(\theta|\textbf{y}) \sim Gamma\left(\sum_{i=1}^n y_i\left(1 + \frac{1}{n}\right) + 1, (n+1)\right)
+\end{align*}

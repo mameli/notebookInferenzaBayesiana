@@ -1,0 +1,31 @@
+\subsection{Esercizio 28 ottobre informatici}
+Realizza un importance sampling per stimare il valore atteso della mistura di due beta $(0.3 \times \beta(5,2) + 0.7 \times \beta(2,8))$. Valuta altres\`i utilizzando il campione ottenuto la probabilit\`a di questa mistura nell'intervallo [0.45 - 0.55]
+
+\textbf{Svolgimento}:
+\bigskip
+
+La funzione $g(x)$ usata campionare gli $x_i$ \`e una uniforme tra 0 ed 1.\\
+Il codice R scritto per effettuare l'\textit{importance sampling} \`e il seguente:
+
+\lstinputlisting[style=R]{code/es_19_oct_inf.R}
+
+Il codice \`e una funzione che, data in input la dimensione del campione, effettua l' \textit{importance sampling} nella mistura restituendo il valore atteso sul campione e la probabilit\`a che si trovi nell'intervallo $[0.45 - 0.55]$.\\
+Il valore atteso calcolato analiticamente dalla mistura \`e il seguente:
+\begin{align*}
+E [ 0.3 \times \beta (5,2) + 0.7 \times \beta (2,8) ] &=  	0.3 \times E [ \beta (5,2) ] + 0.7 \times E[\beta(2,8)] \\
+&=  0.3 \times \dfrac{5}{7} + 0.7 \times \dfrac{2}{10} \\
+&=  0.3542857 
+\end{align*}
+Invece qui di seguito sono presentati in forma tabellare i risultati ottenuti dall'esecuzione dello script al variare della dimensione del campione: \medskip \\
+\begin{tabular}{|c|c|c|}
+	\hline 
+	Dimensione campione & Valore atteso & Probabilit\`a intervallo [0.45 - 0.55] \\ 
+	\hline 
+	10000 & 0.3560484 & 0.1990000 \\ 
+	\hline 
+	50000 & 0.3552311 & 0.2028800 \\ 
+	\hline 
+	100000 & 0.3552139 & 0.2034500 \\ 
+	\hline 
+\end{tabular} \medskip\\
+Come possiamo notare il valore atteso calcolato tramite \textit{importance sampling} \`e abbastanza preciso in tutte e tre righe con un errore dell'ordine di $10^{-3}$ mentre la probabilit\`a di finire nell'intervallo [0.45 - 0.55] \`e sempre intorno allo 0.2 e ci\`o suggerisce che la densit\`a in questo intervallo \`e alta.

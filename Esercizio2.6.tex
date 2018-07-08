@@ -1,0 +1,56 @@
+\subsection{Esercizio 2.6 Hoff}
+
+Conditional independence: Suppose events A and B are conditionally independent given C, which is written $A\perp B|C$. Show that this implies that $A^c\perp B|C$, $A\perp B^c|C$ and $A^c\perp B^c|C$, where $A^c$ means "not A". Find an example where $A\perp B|C$ holds but $A\perp B|C^c$ does not hold.
+
+\textbf{Svolgimento}:
+\bigskip
+
+$A\perp B|C$ significa che
+$$
+	P(A,B|C) = P(A|C)\cdot P(B|C)
+$$
+Partendo da questa assunzione dobbiamo dimostrare che:
+\begin{enumerate}
+	\item $P(A^c, B|C) = P(A^c|C)\cdot P(B|C)$
+	\item $P(A, B^c|C) = P(A|C)\cdot P(B^c|C)$
+	\item $P(A^c, B^c|C) = P(A^c|C)\cdot P(B^c|C)$
+\end{enumerate}
+
+Per tutti e 3 i casi partiamo dalla parte destra dell'equazione e dimostriamo che è equivalente alla sinistra, utilizzando l'ipotesi.
+
+\subsubsection{} 
+$$
+	P(A^c|C)\cdot P(B|C) = (1-P(A|C))\cdot P(B|C) = P(B|C) - P(A|C)\cdot P(B|C) \stackrel{HP}{=} 
+$$
+$$
+	\stackrel{HP}{=} P(B|C) - P(A,B|C) = \frac{P(B,C)}{P(C)} - \frac{P(A,B,C)}{P(C)} = \frac{P(A,B,C^c)}{P(C)} = P(A^c,B|C)
+$$
+
+\subsubsection{} 
+è analogo al precedente:
+$$
+	P(A|C)\cdot P(B^c|C) = P(A|C)\cdot (1-P(B|C)) = P(A|C) - P(A|C) \cdot P(B|C)  \stackrel{HP}{=}
+$$
+$$
+	 \stackrel{HP}{=} P(A|C) - P(A,B|C) = \frac{P(A,C)}{P(C)} - \frac{P(A,B,C)}{P(C)} = \frac{P(A,B^c,C)}{P(C)} =P(A,B^c|C)
+$$
+
+\subsubsection{}
+$$
+	P(A^c|C)\cdot P(B^c|C) = (1-P(A|C))\cdot P(1-P(B|C)) =
+$$
+$$
+	= 1 - P(A|C) - P(B|C) + P(A,B|C) \stackrel{HP}{=}
+$$
+$$
+	\stackrel{HP}{=} 1 - P(A|C) - P(B|C) + P(A,B|C) =
+$$
+$$
+	= 1-\frac{P(A,C)}{P(C)} - \frac{P(B,C)}{P(C)} + \frac{P(A,B,C)}{P(C)} = 
+$$
+$$
+	= \frac{P(C)-P(A,C)-P(B,C)+P(A,B,C)}{P(C)} =
+$$
+$$
+ 	=\frac{P(A^c,B^c,C)}{P(C)} = P(A^c,B^C|C)
+$$

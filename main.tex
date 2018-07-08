@@ -1,0 +1,138 @@
+\documentclass[12pt]{article}
+\usepackage{listings}
+\usepackage{enumerate}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage{caption}
+\usepackage[shortlabels]{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cancel}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{dsfont}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{fancyvrb}
+\usepackage{hyperref}
+\usepackage{lastpage}
+\usepackage{mathtools}
+\usepackage{natbib}
+\usepackage{parskip}
+\usepackage{sectsty}
+\usepackage{subfigure}
+\usepackage{tikz}
+\usepackage{verbatim}
+
+\definecolor{darkBlue}{rgb}{0.21,0.46,0.80}
+\definecolor{notWhite}{HTML}{F2F2EB}
+\definecolor{notBlack}{HTML}{272822}
+\definecolor{monokai@black}{HTML}{2C2C2A}
+\definecolor{monokai@gray}{HTML}{524F52}
+\definecolor{monokai@magenta}{HTML}{D33682}
+\definecolor{monokai@blue}{HTML}{004C99}
+\definecolor{monokai@yellow}{HTML}{FDF5A9}
+\definecolor{monokai@orange}{HTML}{FD971F}
+\definecolor{monokai@red}{HTML}{DC322F}
+\definecolor{monokai@violet}{HTML}{F7208B}
+\definecolor{monokai@green}{HTML}{009900}
+
+\lstdefinestyle{R}{
+	frame=tb,
+	language=R,
+	backgroundcolor=\color{notWhite},
+	aboveskip=1mm,
+	belowskip=1mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=left,
+	numberstyle=\tiny\color{monokai@black},
+	numbersep=5pt,
+	stepnumber=2,
+	breaklines=true,
+	tabsize=3,
+	numberstyle=\color{monokai@gray},
+	keywordstyle=\color{darkBlue},
+	stringstyle=\color{monokai@green}\ttfamily,
+	identifierstyle=\color{monokai@black},
+	commentstyle=\color{monokai@violet},
+	emphstyle=\color{monokai@red},
+	otherkeywords={0,1,2,3,4,5,6,7,8,9},
+    morekeywords={TRUE,FALSE}
+}
+
+\newcommand{\redverb}[1]{
+	{
+	\color{red}
+	\verbatiminput{code/#1}
+	}
+}
+
+\renewcommand{\lstlistingname}{Codice}
+
+\begin{document}
+\begin{titlepage}
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+	\center
+	
+	\textsc{\LARGE Università degli studi di Firenze}\\[1.5cm] 
+	
+	\textsc{\Large Curriculum Data Science}\\[0.5cm] 
+	
+	\textsc{\large Inferenza statistica Bayesiana}\\[0.5cm] 
+
+	\HRule\\[0.4cm]
+	
+	{\huge\bfseries Quaderno degli esercizi}\\[0.4cm] % Title of your document
+	
+	\HRule\\[1.5cm]
+	\vfill\vfill\vfill 
+
+	\begin{minipage}{\textwidth}
+		\begin{flushright}
+			\large
+			\textit{Studente}\\
+			\textsc{Filippo Mameli}\\
+			\texttt{filippo.mameli@stud.unifi.it}
+		\end{flushright}
+	\end{minipage}
+	
+	\vfill
+	
+	{\large Anno accademico 2017-2018}
+	
+\end{titlepage}
+
+\newpage
+
+% \tableofcontents
+
+% \newpage
+
+% \thispagestyle{empty}\clearpage\mbox{}\clearpage
+
+\section{Prima Parte}
+% \textbf{Svolgimento}:
+% \bigskip
+\input{Esercizio2.1D}
+\input{Esercizio2.6}
+\input{Esercizio3.07}
+\input{Esercizio3.14}
+\input{Esercizio19_10_17}
+\input{Esercizio6.1}
+\input{Esercizio7.2}
+
+\section{Seconda Parte}
+\input{Esercizio13_11_17}
+\input{Esercizio8.2} % da controllare
+\input{Esercizio10.2}
+\input{Esercizio11.2}
+	
+\end{document}
