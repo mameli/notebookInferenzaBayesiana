@@ -179,8 +179,6 @@ lines (density (raccolto [, 4]), col = "darkorange ")
 legend ("topright",legend = c("x=2", "x=4", "x=6", "x=8"),col = c("deepskyblue", " deeppink ", "chartreuse", " lightsalmon "), lty = 1)
 apply (raccolto, 2, mean)
 
-apply ( raccolto,2,mean)
-
 y.pred<-rnorm( nsimul,BETA.pp%*%x, S2.POST)
 
 quantile(y.pred, c (0.025,0.975)) 

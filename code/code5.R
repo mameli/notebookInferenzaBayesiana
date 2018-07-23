@@ -1,1 +1,0 @@
-beta.post <- metropolis(var.prop, nsimul)

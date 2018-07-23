@@ -63,14 +63,194 @@ Possiamo formulare la a priori per $\alpha$ e $\beta$ in molti modi, due dei qua
     \item \textbf{In maniera non informativa:} ricaviamo il range di $p$ in base alla proproporzione osservata e all'appprossimazione alla distribuzione normale della porporzione campionaria. In questo caso $\hat p = 0.55$; poiché $\hat p \approx N(p, \frac{p(1-p)}{n})$, ragionando sempre secondo la logica degli intervalli di confidenza, ipotizziamo che il campo di variazione di $p$ sia tra $\hat p - 2 \sqrt{\frac{\hat p (1-\hat p)}{n}} = 0.55 - 2 \sqrt{\frac{0.55 \cdot 0.45}{43}} \approx 0.47$ e $\hat p + 2 \sqrt{\frac{\hat p (1-\hat p)}{n}} = 0.55 + 2 \sqrt{\frac{0.55 \cdot 0.45}{43}} \approx 0.62$. Ponendo quindi $p \in [0.47, 0.62]$, impostiamo la prior per $\alpha$ e $\beta$ secondo la logica seguita al punto precedente. Non svogliamo tutti i calcoli perché si è scelto di lavorare con la prior individuata al punto 1.
 \end{enumerate}
 Rispondiamo adesso alle altre richieste dell'esercizio in R. Di seguito il codice con output e commenti.
-\lstinputlisting[style=R]{code/code1.R}
-\redverb{out1.txt}
-\lstinputlisting[style=R]{code/code2.R}
-\redverb{out2.txt}
-\lstinputlisting[style=R]{code/code3.R}
-\redverb{out3.txt}
-\lstinputlisting[style=R]{code/code4.R}
-\redverb{out4.txt}
-\lstinputlisting[style=R]{code/code5.R}
-\redverb{out5.txt}
 
+\begin{lstlisting}[style=R]
+#Funzione per campionare da una distribuzione normale multivariata
+rmvnorm <- function(n, mu, Sigma)
+{
+  #samples form the multivariate normal distribution
+  E<-matrix(rnorm(n*length(mu)), n, length(mu))
+  t( t(E%*%chol(Sigma)) +c(mu))
+}
+#Lettura dei dati :
+dati<-as.matrix(dati<-read.table(
+  "/home/mameli/git/notebookInferenzaBayesiana/code/msparrownest.dat", 
+  col.names=c("Y" , "X")))
+head(dati)
+\end{lstlisting}
+
+{
+\color{red}
+\begin{Verbatim}
+      Y       X 
+[1,]  0     13.03 
+[2,]  1     13.69 
+[3,]  1     12.62 	
+[4,]  0     11.70 	
+[5,]  0     12.39 	
+[6,]  0     12.44
+\end{Verbatim}
+}
+
+\begin{lstlisting}[style=R]
+#Matrice del modello e vettore delle osservazioni :
+X = cbind(1, dati[,2])
+head(X)
+\end{lstlisting}
+
+{
+\color{red}
+\begin{Verbatim}
+    [,1]    [,2]
+[1,]  1     13.03
+[2,]  1     13.69
+[3,]  1     12.62
+[4,]  1     11.70
+[5,]  1     12.39
+[6,]  1     12.44
+\end{Verbatim}
+}
+
+\begin{lstlisting}[style=R]
+y = dati[,1]
+head(y)
+\end{lstlisting}
+
+{
+\color{red}
+\begin{Verbatim}
+[1] 0 1 1 0 0 0
+\end{Verbatim}
+}
+
+\begin{lstlisting}[style=R]
+n<-length(y)
+p<-dim(X)[2]
+
+
+#b) inizializziamo la prior:
+
+pmn.beta<-c(1.1, 0)
+psd.beta<-c(2.75, 0.22)
+
+library(coda)
+metropolis<-function(tuning, nsimul) {	
+  pmn.beta<-c(1.1, 0)
+  psd.beta<-c(2.75, 0.22)
+  var.prop<-tuning
+  beta<-rep(0, p)
+  S<-nsimul
+  BETA<-matrix(0, nrow=S, ncol=p)
+  ac<-0
+  set.seed(1)
+  for(s in 1:S){
+    beta.p<-t(rmvnorm(1, beta, var.prop))
+    lhr<- sum(log(dbinom(y,1,exp(X%*%beta.p)/(1+exp(X%*%beta.p))))) + dnorm(beta.p[1],pmn.beta[1],psd.beta[1],log=TRUE) + dnorm(beta.p[2],pmn.beta[2],psd.beta[2],log=TRUE)-sum(log(dbinom(y,1,exp(X%*%beta)/(1+exp(X%*%beta)))))-dnorm(beta[1],pmn.beta[1],psd.beta[1],log=TRUE)-dnorm(beta[2],pmn.beta[2],psd.beta[2],log=TRUE)
+    if(log(runif(1))<lhr) beta<-beta.p; ac<-ac+1
+    BETA[s,]<-beta 
+  }
+  Ef<-effectiveSize(BETA)
+  
+  cat("acceptance rate=", ac/S, "\n")
+  cat("effective sample size=", Ef, "\n")
+  return (BETA)
+}
+eturn (BETA)
+}
+
+nsimul <- 1000
+var.prop <- var(log(y + 1 / 2)) * solve(t(X) %*% X)
+var.prop
+\end{lstlisting}
+
+{
+\color{red}
+\begin{Verbatim}
+            [,1]		[,2]
+[1,]  1.11413865	-0.085406852
+[2,]  -0.085406852	0.006588971
+\end{Verbatim}
+}
+
+\begin{lstlisting}[style=R]
+beta.post <- metropolis(var.prop, nsimul)
+\end{lstlisting}
+
+{
+\color{red}
+\begin{Verbatim}
+Acceptance rate = 0.764
+Effective sample size = 51.65653
+\end{Verbatim}
+}
+
+\begin{lstlisting}[style=R]
+  var.prop <- var.prop*9
+  nsimul <- 5000
+  beta.post <- metropolis( var.prop, nsimul)
+\end{lstlisting}
+  
+{\color{red}
+\begin{verbatim}
+acceptance rate= 1 
+effective sample size= 915.514 912.21 
+\end{verbatim}
+}
+
+\begin{lstlisting}
+  skips<-seq(5,nsimul,by=10)
+  plot(skips ,beta.post[skips ,1], type="l", xlab="iteration",ylab=expression(alpha), col = "red")
+  plot(skips, beta.post[skips ,2] ,type="l",xlab="iteration", ylab=expression (beta), col = "blue")
+  \end{lstlisting}
+  
+  \begin{figure}[htbp]
+    \label{fig:grafici}
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/esercizio10-2-1}% "%" necessario
+    \qquad\qquad
+    \includegraphics[width=0.8\linewidth]{img/esercizio10-2-2}
+    \caption{}
+  \end{figure}
+  
+  Facciamo adesso il confronto delle distribuzioni a priori e posteriori dei coefficienti di regressione:
+  
+  \begin{lstlisting}
+  par(mfrow=c(1,2))
+  x<-seq(-10, 10, by=0.1)
+  plot(x, dnorm(x, pmn.beta[1], psd.beta[1]) ,ylim=c(0,0.25), type="l",lwd=1, xlab=expression(alpha), ylab="density", col = "orange")
+  lines(density(beta.post[ ,1]) , col = "red")
+  legend("topright",legend=c("Prior","Posterior"),lty = c(1,1),cex=0.7, bty="n",seg.len=1.5,  col = c("orange","red"))
+  y<-seq(-2,2,by=0.01)
+  plot(y,dnorm(y,pmn.beta[2],psd.beta[2]), ylim=c(0,3), type="l", lwd=1, xlab=expression(beta), ylab="density", col = "orange")
+  lines(density(beta.post[ ,2]) , col="red")
+  legend("topright",legend=c("Prior","Posterior"),lty = c(1,1),cex=0.7,bty="n", seg.len=1.5, col = c("orange","red"))
+  \end{lstlisting}
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/esercizio10-2-3}
+    \caption{}
+    \label{fig:metropolis3}
+  \end{figure}
+  
+  \begin{lstlisting}
+    f<-exp(t(X%*%t(beta.post)))/(1+exp(t(X%*%t(beta.post))))
+    qE<-apply(f,2,quantile,probs=c(0.025,0.975))
+    par(mfrow=c(1,1))
+    plot(c(10,15),range(c(0,qE)),type="n",xlab="wingspan",ylab="f")
+    lines(qE[1,],col="deepskyblue",lwd=2)
+    lines(qE[2,],col="deeppink",lwd=2)
+  \end{lstlisting}
+
+  Notiamo che la distribuzione a posteriori dà probabilità maggiore a valori più bassi di $\alpha$ e a valori più alti di $\beta$ rispetto a quella a priori. Questo significa che avevamo ipotizzato una proabilità di nidificare un po' troppo alta.\\
+  
+  Approssimiamo adesso la funzione richiesta nel punto e, utilizzando i risultati dell'algoritmo di Metropolis. Tracciamo anche la banda di confidenza al $95\%$.
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/esercizio10-2-4}
+    \caption{}
+    \label{fig:metropolis4}
+  \end{figure}
+  
+  Dal grafico si evince che l'ampiezza delle ali non influenza la probabilità di nidificare poichè la banda di confidenza è praticamente parallela all'asse delle ascisse.
+  
+  

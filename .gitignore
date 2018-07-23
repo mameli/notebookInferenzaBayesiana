@@ -12,3 +12,4 @@
 *.arff
 *.csv
 *.gz
+*.out
