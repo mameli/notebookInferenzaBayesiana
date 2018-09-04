@@ -14,7 +14,9 @@ Sensitivity analysis: In this exercise we will revisit the study from Exercise 5
 \textbf{Svolgimento}
 \bigskip
 
-L'obiettivo di questo esercizio e'\ quello di condurre un'analisi di sensitivita\'. Ossia, si vuole valutare il cambiamento dell'inferenza al variare della specificazione della prior. Dato il modello delle osservazioni 
+L'obiettivo di questo esercizio è quello di condurre un'analisi di sensitività. 
+Ossia, si vuole valutare il cambiamento dell'inferenza al variare della specifica\-zione della prior. 
+Dato il modello delle osservazioni:
 \[
 Y_{iA} = \mu + \delta + \varepsilon_{iA};
 \]
@@ -36,15 +38,62 @@ Y_{iB} = \mu - \delta + \varepsilon_{iB} = \varepsilon_{iB};
 \[
 p(\mu,\delta,\sigma^2) = p(u)p(\delta)p(\sigma^2)
 \]
-e la sua rappresentazione tramite DAG in Figura \ref{figure:dag}
-\begin{figure}
- \centering
- \includegraphics[scale=0.6]{img/DAG}
- 
- \caption{DAG: confronto tra due popolazioni normali}
- \label{figure:dag}
-\end{figure}
-\begin{itemize}
+e la sua rappresentazione tramite DAG qui di seguito:
+
+\begin{tikzpicture}[
+	> = stealth, % arrow head style
+	shorten > = 1pt, % don't touch arrow head to node
+	auto,
+	node distance = 3cm, % distance between nodes
+	semithick
+]
+
+\tikzstyle{every state}=[
+	draw = black,
+	thick,
+	fill = white,
+	minimum size = 4mm
+]
+
+\node[state, dashed] (v1)  {$\mu$};
+
+\node[state] (y1) [below left of= v1] {$y_{1A}$};
+\node[state] (y2) [right of= y1] {$y_{1A}$};
+\node[state] (y3) [right of= y2] {$y_{naA}$};
+\node[state] (y4) [right of= y3] {$y_{1B}$};
+\node[state] (y5) [right of= y4] {$y_{2B}$};
+\node[state] (y6) [right of= y5] {$y_{nbB}$};
+
+\node[state, dashed] (v2) [above right of=y4] {$\theta$};
+
+\node[state, dashed] (s1) [below right=1cm and 0.8cm of y3] {$\sigma^2$};
+
+\path[->] (v1) edge node {} (y1);
+\path[->] (v1) edge node {} (y2);
+\path[->] (v1) edge node {} (y3);
+\path[->] (v1) edge node {} (y4);
+\path[->] (v1) edge node {} (y5);
+\path[->] (v1) edge node {} (y6);
+
+\path[->] (v2) edge node {} (y1);
+\path[->] (v2) edge node {} (y2);
+\path[->] (v2) edge node {} (y3);
+\path[->] (v2) edge node {} (y4);
+\path[->] (v2) edge node {} (y5);
+\path[->] (v2) edge node {} (y6);
+
+\path[->] (s1) edge node {} (y1);
+\path[->] (s1) edge node {} (y2);
+\path[->] (s1) edge node {} (y3);
+\path[->] (s1) edge node {} (y4);
+\path[->] (s1) edge node {} (y5);
+\path[->] (s1) edge node {} (y6);
+
+\draw[black, dotted] (2.3, -2.2) -- (2.8, -2.2);
+\draw[black, dotted] (10.9, -2.2) -- (11.4, -2.2);
+\end{tikzpicture}
+
+\begin{itemize}[-]
 \item Assegniamo agli iperparametri i valori che sono stati richiesti
 \[
 \mu_0 = 75; \quad \gamma_0^2 = 100; \quad \frac{\nu}{2} = 1 \implies \nu_0 = 2; \quad \frac{\nu_0\sigma_0^2}{2}=100
@@ -65,9 +114,9 @@ avendo i seguenti dati campionari
 \[
 n_j=n=16; \quad \bar{y_j}=\frac{1}{n_j}\sum_{i=1}^{n_j}y_{ij}; \quad s_j = \sqrt{\frac{1}{n_j-1}\sum_{i=1}^{n_j}(y_{ij}-\bar{y_j})^2}
 \]
-per fare l'inferenza richiesta e'\ necessario determinare la distribuzione a posteriori delle variabili $\mu,\delta,\sigma^2$, ossia
+per fare l'inferenza richiesta è necessario determinare la distribuzione a posteriori delle variabili $\mu,\delta,\sigma^2$, ossia
 $$p(\mu,\delta,\sigma^2|y_{1A},\dots,y_{n_AA},y_{1B},\dots,y_{n_BB}).$$ 
-Per far cio'\ approssimiamo tale distribuzione mediante campionamento MCMC, secondo l'ottica Gibbs. Le distribuzioni full conditional dei parametri sono quindi le seguenti:
+Per far ciò approssimiamo tale distribuzione mediante campionamento MCMC, secondo l'ottica Gibbs. Le distribuzioni full conditional dei parametri sono quindi le seguenti:
 \[
 \sigma^2 | y_{1A},\dots,y_{n_AA},y_{1B},\dots,y_{n_BB}, \mu, \delta \sim inverse-Gamma(\frac{\nu_n}{2},\frac{\nu_n\sigma_n^2}{2}) 
 \]
@@ -186,35 +235,16 @@ gamma20<-100
 v0<-2
 sigma20<-100
 
-#Valori iniziali dei parametri + numero di simulazioni:
+#Valori iniziali dei parametri e numero di simulazioni:
 
 delta <-(y.barA-y.barB)/2
 mu<-(y.barA+y.barB) /2
 
-#NB Si sono scelte ragionevolmente l a semi differenza e la media delle medie
-#campionarie come starting values dell' algoritmo rispettivamente per i
-#parametri delta e mu. Nulla vieta pero' di scegliere un altro setting: se
- #il numero di iterazioni e' sufficientemente elevato l'inferenza non
-#cambia.
-
 nsimul<-1000
 
-#Creiamo un array dove andremo ad immagazzinare i valori campionati durante
-#l'algoritmo:
+#Creiamo un array dei i valori campionati durante l'algoritmo:
 
 gibbs<-array(NA,c(nsimul,3,length(delta0)*length(tau20)))
-
-#Osservazione: e' stato creato un array di dimensioni 1000x3x20 dove 1000
-#corrisponde al numero di righe (estrazioni dalla congiunta a posteriori),
-#3 corrisponde al numero di colonne (numero di variabili casuali della
-#distribuzione a posteriori congiunta in esame) e 20 corrisponde alla
-#lunghezza della terza dimensione (tutti i possibili modi di specificare la
-#coppia degli iperparametri di delta secondo i valori richiesti).
-#Un altro modo di procedere poteva essere quello di creare una funzione che
-#prende in ingresso due valori corrispondenti ai valori degli
-#iperparametri che assegnamo alla prior su delta e che svolge l' algoritmo
-#Gibbs. Questo modo di procedere sarebbe piu' gene rale, ma decidiamo di
-#lavorare con l'array dal momento che conosciamo le combinazioni richieste.
 
 #Ciclo Gibbs:
 
@@ -250,13 +280,7 @@ for(j in delta0){
 
 colnames(gibbs)<-c("mu","delta","sigma2")
 
-#a )
-
-#Probabilita' a posteriori che la semi-differenza tra le medie sia negativa
-#+ intervallo di credibilita' a posteriori per la semi-differenza tra le
-#medie + correlazione a priori e a posteriori tra la media del primo gruppo
-#e quella del secondo (tutto per ognuna delle possibili prior definite su
-#delta):
+#a)
 
 probabilita.post<-corrrelazione. post<-matrix (NA,5,4)
 quantili.post<-NULL
@@ -291,8 +315,8 @@ probabilita.post
 {
 \color{red}
 \begin{Verbatim}
-  > probabilita.post
-  tau20=10  tau20=50  tau20=100  tau20=500
+> probabilita.post
+          tau20=10    tau20=50  tau20=100  tau20=500
 delta0=-4    0.899     0.834      0.807      0.802
 delta0=-2    0.841     0.812      0.778      0.788
 delta0=0     0.755     0.802      0.772      0.786
@@ -300,31 +324,10 @@ delta0=2     0.704     0.769      0.788      0.799
 delta0=4     0.617     0.756      0.771      0.781
 \end{Verbatim}
 }
+La tabella precedente contiene la probabilità a posteriori che la semidif\-ferenza tra le medie dei due gruppi sia negativa, 
+per ciascuna delle possibile coppie di valori di $\delta_0$ e $\tau_o^2$.
 
 \begin{lstlisting}[style=R]
-#Commentiamo la matrice di probabilita' appena calcolata. Come gia' detto,
-#ognuna corrisponde alla probabilita' a posteriori che la semi-differenza
-#tra le medie dei due gruppi sia negativa per una delle 20 possibili
-#specificazioni di delta0 e tau20, iperparametri del parametro
-#semi-differenza delta. Facciamo notare come queste combinazioni portino a
-#distribuzioni priori molto diverse tra loro:  fissando tau2 e facendo
-#variare delta0 si rappresentano opinioni che cambiano dal ritenere la
-#media del gruppo A sia minore di quella del gruppo B (delta0=-4)al
-#ritenere le due medie uguali (delta0=0) al ritenere che la media del
-#gruppo B sia di gran lunga minore di quella del gruppo A (delta0=4);
-#fissando delta0 e facendo variare tau20 si rappresentano distribuzioni che
-#cambiano in base all' essere molto informative(tau20=10) o all' esserlo il
-#meno possibile (tau20=500).
-#Come ci aspettavamo, i risultati cambiano a seconda della prior
-#specificata: in particolare la probabilita' che la semi-differenza delta
-#sia minore di zero e' molto piu' elevata quanto piu' l'informazione a
-#priori su tale parametro lo centra su valori negativi ed e' molto accurata
-#(si notino casi estremi come quello in cui si ha il valore atteso e la
-#varianza di delta come delta0=-4 e tau2=10 e  quello in cui, a parita' di
-#varianza, si ha la forte opinione a priori che la semi-differenza tra le
-#due medie di gruppo sia positiva: la probabilita' in esame scende da circa
-#0.9 a circa 0.6).
-
 #Rappresentiamo tutte queste probabilita' anche graficamente:
 
 par(mfrow=c(3,2))
@@ -342,9 +345,8 @@ for(i in 1:5){
  \caption{probabilità a posteriori al variare della prior}
  \label{figure:figura12}
 \end{figure}
-
+\newpage
 \begin{lstlisting}[style=R]
-
 #a)ii
 \end{lstlisting}
 {
@@ -375,20 +377,12 @@ delta0=4 tau20=500  -4.298413 1.823357
 \end{Verbatim}
 }
 
-
 \begin{lstlisting}[style=R]
-#Per quanto riguarda gli intervalli di credibilita' per delta si osserva
-#quanto appena notato per la precedente #probabilita': la distribuzione a
-#priori influisce piu' dei dati sull'inferenza a posteriori quanto piu' e'
-#informativa.
-
 #a)iii
 
-#Confrontiamo ora le correlazioni a priori e quelle #a posteriori fra le
-#medie dei due gruppi thetaA=mu+delta e thetaB=mu-delta.
-#La correlazione a priori si puo' calcolare #analiticamente e rimandiamo per
-#questo a i passaggi precedenti al codice e riportiamo di seguito i valori
-#per ogni combinazione degli iperparametri della prior su delta):
+#Confrontiamo ora le correlazioni a priori e quelle a
+#posteriori fra le medie dei due gruppi thetaA=mu+delta e 
+#thetaB=mu-delta.
 
 correlazione.prior<-c(0.81,0.33,0,-0.67)
 
@@ -412,30 +406,7 @@ correlazione.prior<-c(0.81,0.33,0,-0.67)
 
 
 \begin{lstlisting}[style=R]
-#Si osserva che le correlazioni a posteriori tra le medie dei due gruppi
-#sono pressoche' nulle per tutte le possibili specificazioni della prior
-#su delta; a priori invece si osserva che la correlazione e' molto alta in
-#direzione positiva per specificazioni di prior molto informative e
-#viceversa decresce fino a valori negativi per prior sempre piu' diffuse.
-
-
 #b)
-
-#Il confronto tra le due medie di gruppo thetaA e thetaB puo' essere
-#ricondotto al parametro delta, semi-differenza tra le due medie,
-#per come e' stato formulato il modello gerarchico: in questo caso thetaA
-#e' minore di thetaB se delta e' minore di z e ro. Possiamo pertanto usare i
-#risultati del punto precedente per descrivere come cambia l'evidenza che
-#thetaA sia minore di thetaB tra persone che hanno opinioni molto diverse
-#tra loro.
-#Per quanto prima osservato risulta che l'inferenza a posteriori segue
-#la direzione che ci aspettiamo in base alla distribuzione a priori
-#specificata: le prior della semi differenza piu' informative e centrate su
-#valori negativi hanno un peso maggiore dei dati e viceversa. Vediamolo di
-#seguito riportando alcuni plot che mettono a confronto la distribuzione a
-#priori e quella a posteriori di delta, in particolare quelli per delta0=-4
-#in cui varia tau2 e quelli per delta0=4 in cui varia tau2 (situazioni
-#estreme)
 
 win.graph()
 par(mfrow=c(2,2))
@@ -477,9 +448,9 @@ for(j in 1:4){
  \caption{densita' a posteriori al variare della prior}
  \label{figure:figura14}
 \end{figure}
-\begin{lstlisting}[style=R]
 
-#Come sempre facciamo una veloce verifica della convergenza dell'algoritmo:
+\begin{lstlisting}[style=R]
+#Facciamo una veloce verifica della convergenza dell'algoritmo:
 #library(coda)
 effectiveSize(gibbs[,,1])
 \end{lstlisting}
@@ -491,8 +462,6 @@ effectiveSize(gibbs[,,1])
 1000   1000    1000
 \end{Verbatim}
 }
-
-
 
 \end{itemize}
 

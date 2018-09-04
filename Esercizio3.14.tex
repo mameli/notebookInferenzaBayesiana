@@ -43,7 +43,7 @@ a) Nel caso analizzato la funzione di densità sarà una Bernuoulli:
 $p(y|\theta)=\theta^{y}(1-\theta)^{1-y}$
 \end{center}
 
-e la relativa funzione di verosimigliana per un campione di n osservazioni i.i.d. sarà 
+e la relativa funzione di verosimigliana per un campione di $n$ osservazioni i.i.d. sarà 
 \begin{align*}
 \mathcal{L}(\theta: \textbf{y})=\prod_{i=1}^n\theta^{y_i}(1-\theta)^{1-y_i}
 \end{align*}
@@ -64,7 +64,7 @@ n\theta +
 &=\frac{\sum_{i=1}^{n}y_i}{n} = \hat{\theta} = MLE
 \end{align*}
 
-Adesso dobbiamo calcolarci l'informazione osservata di Fisher, ovvero $J(\hat{\theta}) = -\frac{\partial^2 l(\theta;\textbf{y})}{\partial\theta^2}$, dove al posto di $\theta$ sostituiamo $\hat{\theta}$ per ottenere una misura dell'informazione nel punto di massima verosomiglianza.
+Calcolcoliamo l'informazione osservata di Fisher, ovvero $J(\hat{\theta}) = -\frac{\partial^2 l(\theta;\textbf{y})}{\partial\theta^2}$, dove al posto di $\theta$ sostituiamo $\hat{\theta}$ per ottenere una misura dell'informazione nel punto di massima verosomiglianza.
 \begin{align*}
 \frac{\partial^2 l(\theta;\textbf{y})}{\partial\theta^2} &= -\frac{\sum_{i=1}^{n}y_i}{\theta^2}+\frac{n-\sum_{i=1}^{n}y_i}{(1-\theta)^2}\\
 J(\theta) = -\frac{\partial^2 l(\theta;\textbf{y})}{\partial\theta^2} &= \frac{\sum_{i=1}^{n}y_i}{\theta^2}-\frac{n-\sum_{i=1}^{n}y_i}{(1-\theta)^2}
@@ -126,7 +126,10 @@ J_U(\theta) = -\frac{\partial^2 p_U(\theta)}{\partial\theta^2} &= \frac{\sum_{i=
 \frac{n-\sum_{i=1}^{n}y_i}{n(1-\theta)^2} = \frac{J(\theta)}{n}
 \end{align*}
 
-Notiamo che l'informazione di Fisher per la unit information prior $J_U(\theta)$ non è altro che un \textit{n}-esimo dell'informazione di Fisher per l'intero campione $J(\theta)$, quindi la distribuzione ottenuta rispetta la proprietà desiderata.
+Notiamo che l'informazione di Fisher per la unit information prior $J_U(\theta)$ non è 
+altro che un \textit{n}-esimo dell'informazione di Fisher per l'intero 
+campione $J(\theta)$, quindi la distribuzione ottenuta rispetta la proprietà 
+desiderata.
 
 \bigskip
 c)  L'esercizio chiede di trovare una densità di probabilità per $\theta$ che sia proporzionale a $p_U(\theta) \times p(y_1,\cdots,y_n|\theta)$. Procediamo quindi a svolgere i calcoli richiesti nell'intento di riconoscere il kernel di una distribuzione nota:
@@ -164,10 +167,20 @@ Beta
 \right)
 \end{align*}
 
-ma nel nostro caso non abbiamo usato una vera e propria \textit{a priori}, bensì una \textit{unit information prior} che per sua definizione viene ricavata dal campione e non da una pregressa conoscenza del fenomeno analizzato come impone la definizione di ``a priori" della statistica bayesiana. Possiamo però interpretare questa unit information prior, come l’informazione a priori di una persona che è riuscita a centrare la sua distribuzione sullo stimatore di massima verosimiglianza, ma che è molto insicuro di questa sua informazione (per questo dividiamo l’informazione di Fisher per n in modo da aumentarne la varianza). Solo se applichiamo questo ragionamento possiamo considerare la distribuzione trovata come una a posteriori.
+ma nel nostro caso non abbiamo usato una vera e propria \textit{a priori}, 
+bensì una \textit{unit information prior} che per sua definizione viene ricavata 
+dal campione e non da una pregressa conoscenza del fenomeno analizzato come impone 
+la definizione di ``a priori'' della statistica bayesiana. 
+Possiamo però interpretare questa unit information prior, come l’informazione a 
+priori di una persona che è riuscita a centrare la sua distribuzione sullo stimatore 
+di massima verosimiglianza, ma che è molto insicuro di questa sua informazione 
+(per questo dividiamo l’informazione di Fisher per n in modo da aumentarne la varianza). 
+Solo se applichiamo questo ragionamento possiamo considerare la distribuzione trovata 
+come una a posteriori.
 
 \bigskip
-d) Ripetiamo l'intero esercizio ma considerando $p(y|\theta)$ come una distribuzione di Poisson, ovvero:
+d) Ripetiamo l'intero esercizio ma considerando $p(y|\theta)$ come una distribu\-zione 
+di Poisson, ovvero:
 
 \begin{align*}
 p(y|\theta) = \frac{e^{-\theta}\theta^y}{y!}
@@ -236,13 +249,13 @@ Per calcolare l'informazione di Fisher dobbiamo calcolare come primo passo la de
 \frac{\partial p_U(\theta)}{\partial\theta} = -1 + \frac{\sum_{i=1}^n y_i}{n\theta}
 \end{align*}
 
-Di conseguenza, la derivata seconda sara:
+Di conseguenza, la derivata seconda sarà:
 
 \begin{align*}
 \frac{\partial^2 p_U(\theta)}{\partial\theta^2} = - \frac{\sum_{i=1}^n y_i}{n\theta^2}
 \end{align*}
 
-Possiamo adesso calcolare la unit information prior come richiesto
+Possiamo adesso calcolare la unit information prior
 
 \begin{align*}
 J_U(\theta)= - \frac{\partial^2 p_U(\theta)}{\partial\theta^2} = \frac{\sum_{i=1}^n y_i}{n\theta^2} = \frac{J(\theta)}{n}
@@ -256,7 +269,7 @@ p_U(\theta) \times \mathcal{L}(\theta;\textbf{y}) &\propto e^{-\theta} \theta  ^
 &\sim Gamma\left(\sum_{i=1}^n y_i\left(1 + \frac{1}{n}\right) + 1, (n+1)\right)
 \end{align*}
 
-Possiamo quindi concludere che la ``a posteriori" di $p_U(\theta|\textbf{y})$ sia
+Possiamo quindi concludere che la ``a posteriori'' di $p_U(\theta|\textbf{y})$ sia
 
 \begin{align*}
 p_U(\theta|\textbf{y}) \sim Gamma\left(\sum_{i=1}^n y_i\left(1 + \frac{1}{n}\right) + 1, (n+1)\right)

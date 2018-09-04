@@ -39,32 +39,32 @@ Procediamo adesso al calcolo della \textit{a posteriori}.
 \begin{align*}
     P(\theta|\textbf{y}) &= K  \times \mathcal{L}(\theta;\textbf{y})\times P(\theta)\\
     &= K \times \left(\prod_{i=1}^{15}\theta^{y_i}(1-\theta)^{1-y_i}\right)\times\mathds{1}[0,1]^\theta\\
-    &\text{...avendo 2 ``successi" e 13 ``insuccessi" avremo...} \\
+    &\text{...avendo 2 ``successi'' e 13 ``insuccessi'' avremo...} \\
     &= K \times \theta^2(1-\theta)^{13} \times \mathds{1}[0,1]^\theta
 \end{align*}
 
-Per calcolare il valore K e volendo trovare una distribuzione di probabilità propria, sappiamo che l'integrale di quest'ultima dovrà essere uguale a 1 nello spazio ammissibile di $\theta$, ovvero
+Per calcolare il valore $K$ e volendo trovare una distribuzione di probabilità propria, sappiamo che l'integrale di quest'ultima dovrà essere uguale a 1 nello spazio ammissibile di $\theta$, ovvero
 
 \begin{align*}
    1 &= \int_0^1 K \times \theta^2(1-\theta)^{13} \times \mathds{1}[0,1]^\theta\ d\theta \\
     &= K \int_0^1  \theta^2(1-\theta)^{13}\ d\theta
 \end{align*}
 
-Riconosco il kernel di una distribuzione Beta(3,14) e quindi posso moltiplicare e dividere per la sua costante di normalizzazione
+Si riconosce il kernel di una distribuzione Beta(3,14) e quindi si può moltiplicare e dividere per la sua costante di normalizzazione
 \begin{align*}
     1 &= K \int_0^1  \theta^2(1-\theta)^{13} \frac{\Gamma(17)}{\Gamma(3)\Gamma(14)} \frac{\Gamma(3)\Gamma(14)}{\Gamma(17)}\ d\theta\\
     &= K \times \frac{\Gamma(3)\Gamma(14)}{\Gamma(17)} \underbrace{\int_0^1  \theta^2(1-\theta)^{13} \frac{\Gamma(17)}{\Gamma(3)\Gamma(14)}\ d\theta}_\text{=1}\\
     \frac{1}{K}&=\frac{\Gamma(3)\Gamma(14)}{\Gamma(17)}
 \end{align*}
 
-Posso quindi concludere che 
+Si conclude quindi che
 
 \begin{align*}
     P(\theta|\textbf{y}) &= \frac{\Gamma(17)}{\Gamma(3)\Gamma(14)} \theta^2(1-\theta)^{13} \\
     &\sim Beta(3,14)
 \end{align*}
 
-dalla quale posso facilmente calcolare valore medio, moda e standard deviation
+dalla quale si può facilmente calcolare valore medio, moda e standard deviation
 
 \begin{align*}
     E(\theta|\textbf{y}) &= \frac{\alpha}{\alpha + \beta} = \frac{3}{17}\\
@@ -72,7 +72,7 @@ dalla quale posso facilmente calcolare valore medio, moda e standard deviation
     Var(\theta|\textbf{y}) &= \frac{\alpha\beta}{(\alpha + \beta)^2(\alpha + \beta + 1)} = \frac{42}{17^2\times 18} \approx 8*10^{-3}
 \end{align*}
 
-In Figura \ref{fig:beta} possiamo visualizzare la distribuzione appena calcolata
+In Figura \ref{fig:beta} si mostra la distribuzione appena calcolata
 
 \begin{figure}[!ht]
 \centering
@@ -85,7 +85,9 @@ b) Affinchè
 \begin{equation} \label{eq:1}
     Pr(Y_2=y_2) = \int_0^1 Pr(Y_2=y_2|\theta)p(\theta|Y_1=2) \ d\theta
 \end{equation}
-dobbiamo innanzitutto assumere che la distribuzione predittiva non dipenda da quantità incognite ma dipenda dai dati osservati (altrimenti sarebbe inutilizzabile ai fini predittivi), ma che il valore predetto sia indipendente dai dati osservati \underline{dato $\theta$}, ovvero 
+dobbiamo innanzitutto assumere che la distribuzione predittiva non dipenda da quantità 
+incognite ma dipenda dai dati osservati (altrimenti sarebbe inutilizzabile ai fini 
+predittivi), ma che il valore predetto sia indipendente dai dati osservati dato $\theta$, ovvero 
 \begin{align*}
     Y_2 \perp\!\!\!\perp Y_1 | \theta \\
     (\text{ma non } Y_2 \perp\!\!\!\perp Y_1)
@@ -100,14 +102,17 @@ Considerando le assunzioni del testo e svolgendo i calcoli avremo quanto segue:
       &= \binom{278}{y_2} \frac{\Gamma(17)}{\Gamma(3)\Gamma(14)} \int_0^1 \theta^{y_2 + 2}(1-\theta)^{291-y_2}\ d\theta
 \end{align*}
 
-Riconosco nell'integrale il kernel di una Beta($y_2+3,292-y_2$) e quindi utilizzando la stessa tecnica vista al punto precedente avremo
+Si riconosce nell'integrale il kernel di una Beta($y_2+3,292-y_2$) e quindi utilizzando 
+la stessa tecnica vista al punto precedente avremo
 
 \begin{align*}
      Pr(Y_2=y_2) &= \binom{278}{y_2} \frac{\Gamma(17)}{\Gamma(3)\Gamma(14)} \frac{\Gamma(y_2+3)\Gamma(292-y_2)}{\Gamma(295)}\\
      &=  \frac{\Gamma(3+14)}{\Gamma(3)\Gamma(14)\Gamma(3+14+278)}\binom{278}{y_2} \Gamma(3+y_2)\Gamma(14+278-y_2)
 \end{align*}
 
-ovvero una \textbf{Beta-Binomiale(3, 14, 278)} (rappresentata in Figura \ref{fig:betaBinomiale}) dalla quale posso facilmente calcolare media e standard deviation:
+ovvero una \textbf{Beta-Binomiale(3, 14, 278)} 
+(rappresentata in Figura \ref{fig:betaBinomiale}) dalla quale si può 
+facilmente calcolare media e standard deviation:
 
 \begin{align*}
     E(Y_2|Y_1=2) &= n\frac{\alpha}{\alpha + \beta} = 278\frac{3}{17} \approx 49,06\\
@@ -151,4 +156,13 @@ Otteniamo quindi una distribuzione binomiale (rappresentata nella parte destra d
 \label{fig:Binomiale}
 \end{figure}
 
-Risulta evidente come media e moda delle due distribuzioni siano piuttosto simili a differenza della varianza che risulta notevolmente più bassa nella Binomiale. Questo risultato piuttosto intuitivo è dovuto all'aver fissato il parametro $\theta$ nel secondo metodo, che ha come effetto una drastica riduzione dell'intervallo di confidenza rispetto alla media della nostra predizione. Concludendo, per la  predizione di $Y_2$, preferiremo utilizzare quest'ultima variante ovvero assegnare a $\theta$ la MLE, che nonostante sia in leggera contraddizione con la definizione bayesiana di \textit{a priori} (come vedremo nell'esercizio 3.14) ha come effetto una notevole riduzione della variabilità della nostra predizione.
+Risulta evidente come media e moda delle due distribuzioni siano piuttosto simili a 
+differenza della varianza che risulta notevolmente più bassa nella Binomiale. 
+Questo risultato piuttosto intuitivo è dovuto all'aver fissato il parametro $\theta$ 
+nel secondo metodo, che ha come effetto una drastica riduzione dell'intervallo di 
+confidenza rispetto alla media della nostra predizione. 
+
+Concludendo, per la  predizione di $Y_2$, preferiremo utilizzare quest'ultima variante 
+ovvero assegnare a $\theta$ la MLE, che nonostante sia in leggera contrad\-dizione con 
+la definizione bayesiana di \textit{a priori} (come vedremo nell'esercizio 3.14) ha 
+come effetto una notevole riduzione della variabilità della nostra predizione.

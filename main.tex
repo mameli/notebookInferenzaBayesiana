@@ -26,8 +26,11 @@
 \usepackage{parskip}
 \usepackage{sectsty}
 \usepackage{subfigure}
-\usepackage{tikz}
 \usepackage{verbatim}
+\usepackage{pgf, tikz}
+\usepackage{changepage}
+
+\usetikzlibrary{arrows, automata, positioning, fit,backgrounds}
 
 \definecolor{darkBlue}{rgb}{0.21,0.46,0.80}
 \definecolor{notWhite}{HTML}{F2F2EB}
@@ -119,20 +122,27 @@
 % \thispagestyle{empty}\clearpage\mbox{}\clearpage
 
 \section{Prima Parte}
-% \textbf{Svolgimento}:
-% \bigskip
 % \input{Esercizio2.1D}
+% \newpage
 % \input{Esercizio2.6}
+% \newpage
 % \input{Esercizio3.07}
+% \newpage
 % \input{Esercizio3.14}
-% \input{Esercizio19_10_17}
+% \newpage
 % \input{Esercizio6.1}
+% \newpage
 % \input{Esercizio7.2}
-
+% \newpage
 \section{Seconda Parte}
-\input{Esercizio13_11_17}
-% \input{Esercizio8.2} % da controllare
+% \input{Esercizio19_10_17}
+% \newpage
+% \input{Esercizio13_11_17}
+% \newpage
+% \input{Esercizio8.2}
+% \newpage
 % \input{Esercizio10.2}
-% \input{Esercizio11.2}  % aggiungere DAG
+% \newpage
+\input{Esercizio11.2}
 	
 \end{document}

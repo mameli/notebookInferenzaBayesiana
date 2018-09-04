@@ -1,26 +1,25 @@
 \newcommand{\betaols}{\hat{\beta}_{ols}}
 
 \subsection{Esercizio 13 Novembre 2017}
-Dimostrare che $SSR_g$ (come definita a pagina 158 del libro di P. Hoff) tendo a $SSR_{ols} = \sum(y_i - \betaols)^2$ per $g \rightarrow \infty$
+Dimostrare che $SSR_g$ (come definita a pagina 158 del libro di P. Hoff) tende a $SSR_{ols} = \sum(y_i - \betaols)^2$ per $g \rightarrow \infty$
 
 \textbf{Svolgimento}:
-\\
 \bigskip
 
-Per poter dimostrare l'enunciato \`e necessaria la propriet\`a di idempotenza ovvero una matrice A \`e idempotente se $A^r = A \,\, \forall\, r \geqslant 1$ e sapere che $\betaols = X \left(X^T X \right)^{-1} X^T y$.\\
-Innanzitutto risoliviamo il limite:\\
+Per poter dimostrare l'enunciato è necessaria la proprietà di idempotenza ovvero una matrice A è idempotente se $A^r = A \,\, \forall\, r \geqslant 1$ e sapere che $\betaols = X \left(X^T X \right)^{-1} X^T y$.\\
+Innanzitutto risoliviamo il limite:
 \begin{align*}
 	lim_{g \rightarrow + \infty }\,\, SSR_g & = 	lim_{g \rightarrow + \infty } \,\, y^T \left(I - \dfrac{g}{g+1}  X \left(X^T X \right)^{-1} X^T \right) \\
 	                                        & = y^T \left(I - X \left(X^T X \right)^{-1} X^T \right) y
 \end{align*}
-Possiamo notare che la propriet\`a di idempotenza vale per $X \left(X^T X \right)^{-1} X^T$ dato che
+Possiamo notare che la proprietà di idempotenza vale per $X \left(X^T X \right)^{-1} X^T$ dato che
 \begin{align*}
 	\left[X \left(X^T X \right)^{-1} X^T\right]^2 = X \left(X^T X \right)^{-1} X^T \cdot X \left(X^T X \right)^{-1} X^T & = \\ X \left(X^T X \right)^{-1} \left[ X^T  X \left(X^T X \right)^{-1} \right] X^T  &=  X \left(X^T X \right)^{-1} X^T
 \end{align*}
-Perci\`o possiamo concludere la dimostrazione con i seguenti passaggi algebrici
+Perciò possiamo concludere la dimostrazione con i seguenti passaggi algebrici
 \begin{align*}
 	y^T \left(I - X \left(X^T X \right)^{-1} X^T \right) y & = y^T \left(I - X \left(X^T X \right)^{-1} X^T + X \left(X^T X \right)^{-1} X^T  - X \left(X^T X \right)^{-1} X^T \right) y \\ &= y^T \left(I - 2 X \left(X^T X \right)^{-1} X^T + X \left(X^T X \right)^{-1} X^T \right) y \\ &= y^T \left(I - 2 X \left(X^T X \right)^{-1} X^T + X \left(X^T X \right)^{-1} X^T X \left(X^T X \right)^{-1} X^T \right) y \\ &=
 	y^Ty - 2 y^T X \left(X^T X \right)^{-1} X^T y + y^T X \left(X^T X \right)^{-1} X^T X \left(X^T X \right)^{-1} X^T y                                                                  \\ &=
 	y^Ty - 2 \betaols^T X^T  y + \betaols^T X^T X \betaols                                                                                                                               \\ &= \sum_{i=1}^{n}(y_i - \betaols^T x_i)^2
 \end{align*}
-che \`e ci\`o che volevamo dimostrare
+che è ciò che volevamo dimostrare

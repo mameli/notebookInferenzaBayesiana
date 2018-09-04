@@ -75,6 +75,73 @@ cioè:
 	\item $ Y_i \perp Y_j | \beta_1, \dots, \beta_m, \sigma^2 i \neq j$.
 \end{itemize}
 
+Il DAG relativo è mostrato in figura seguente.
+
+\begin{tikzpicture}[
+	> = stealth, % arrow head style
+	shorten > = 1pt, % don't touch arrow head to node
+	auto,
+	node distance = 3cm, % distance between nodes
+	semithick
+]
+
+\tikzstyle{every state}=[
+	draw = black,
+	thick,
+	fill = white,
+	minimum size = 4mm
+]
+
+\node[state, dashed] (v1)  {$\Theta$};
+\node[state, dashed] (v2) [right of=v1] {$\Sigma$};
+
+\node[state, dashed] (b2) [below of= v1] {$\beta_2$};
+\node[state, dashed] (b1) [left of= b2] {$\beta_1$};
+\node[state, dashed] (b3) [right of= b2] {$\beta_3$};
+\node[state, dashed] (b4) [right of= b3] {$\beta_m$};
+
+\node[state] (y1) [below of= b1] {$\underset{i=1 \dots n_1}{y_{i1}}$};
+\node[state] (y2) [right of= y1] {$\underset{i=1 \dots n_2}{y_{i2}}$};
+\node[state] (y3) [right of= y2] {$\underset{i=1 \dots n_3}{y_{i3}}$};
+\node[state] (y4) [right of= y3] {$\underset{i=1 \dots n_m}{y_{im}}$};
+
+\node[state] (x1) [below of= y1] {$x_1$};
+\node[state] (x2) [right of= x1] {$x_2$};
+\node[state] (x3) [right of= x2] {$x_3$};
+\node[state] (x4) [right of= x3] {$x_m$};
+
+\node[state, dashed] (s1) [below right=2cm and 0.8cm of x2] {$\sigma^2$};
+
+\path[->] (v1) edge node {} (b1);
+\path[->] (v1) edge node {} (b2);
+\path[->] (v1) edge node {} (b3);
+\path[->] (v1) edge node {} (b4);
+
+\path[->] (v2) edge node {} (b1);
+\path[->] (v2) edge node {} (b2);
+\path[->] (v2) edge node {} (b3);
+\path[->] (v2) edge node {} (b4);
+
+\path[->] (b1) edge node {} (y1);
+\path[->] (b2) edge node {} (y2);
+\path[->] (b3) edge node {} (y3);
+\path[->] (b4) edge node {} (y4);
+
+\path[->] (x1) edge node {} (y1);
+\path[->] (x2) edge node {} (y2);
+\path[->] (x3) edge node {} (y3);
+\path[->] (x4) edge node {} (y4);
+
+\path[->] (s1) edge node {} (y1);
+\path[->] (s1) edge node {} (y2);
+\path[->] (s1) edge node {} (y3);
+\path[->] (s1) edge node {} (y4);
+
+\draw[black, dotted] (4, -3) -- (5, -3);
+\draw[black, dotted] (4, -6) -- (5, -6);
+\end{tikzpicture}
+
+\newpage
 In seguito si riporta il codice R.
 
 \begin{lstlisting}[style=R]
@@ -182,9 +249,8 @@ p<-dim(X[[1]])[2]
 }
 
 \subsubsection*{Punto a)}
+Stimiamo i coefficienti di regressione con il metodo dei minimi quadrati in modo indipendente per ciascuno dei 10 lotti.
 \begin{lstlisting}[style=R]
-#Stimiamo i coefficienti di regressione secondo il metodo OLS
-#indipendentemente in ciascuno de i 10 lotti:
 S2.OLS<-BETA.OLS<-NULL
 for( j in 1:m){
   fit<-lm(Y[[j]]~-1+X[[j]])
@@ -223,11 +289,10 @@ colnames (BETA.OLS)<-c ("1"," x "," x^2")
 [8] 0.3965025 0.1328380 0.8030505
 \end{Verbatim}
 }
-
+Rappresentiamo graficamente le 10 linee di regressione per valutare la variabi\-lità tra gruppi. 
+Riportiamo sul grafico anche la loro media.
+\newpage
 \begin{lstlisting}[style=R]
-# Rappresentiamo graficamente le 10 linee di regressione per valutare la variabilita' tra gruppi. 
-# Riportiamo sul grafico anche la loro media.
-
 par (mfrow=c (1,2) )
 plot ( range ( dati [,2]), range ( dati [,3]), type="n", xlab="planting density ", ylab="Expected yield ",main="Regression lines OLS")
 for (j in 1:m) {
@@ -235,7 +300,6 @@ for (j in 1:m) {
 }
 BETA.OLS.MEAN <- apply (BETA.OLS, 2, mean)
 curve (BETA.OLS.MEAN[1] + BETA.OLS.MEAN[2] * x + BETA.OLS.MEAN[3] * x ^ 2,lwd = 2, col = "deeppink", add = T)
-
 \end{lstlisting}
 
 \begin{figure}
@@ -253,7 +317,7 @@ curve (BETA.OLS.MEAN[1] + BETA.OLS.MEAN[2] * x + BETA.OLS.MEAN[3] * x ^ 2,lwd = 
 2.86875 1.85485 -0.15925
 \end{Verbatim}
 }
-
+\newpage
 {
 \color{red}
 \begin{Verbatim}
@@ -276,14 +340,14 @@ x 2 0.04430955  -0.02074268  0.001968451
 }
 
 Si osserva che:
-\begin{itemize}
-    \item Tutte le curve hanno lo stesso andamento quadratico: crescente fino ad una densità di piante pari circa a 6 e poi decrescente.
-    \item Alcuni gruppi si discostano particolarmente dalla media generale: il raccolto medio risulta o molto inferiore o molto superiore, soprattutto per i valori più grandi del range della covariata. Nel caso in cui i lotti avessero diverse numerosità al loro interno potremmo immaginare che questo si verifica per i lotti meno numerosi ; in realtà per come è disegnato l' esperimento questa variabilità osservata è dovuta ad altro, forse alle diverse condizioni del terreno dei 10 appezzamenti.
+\begin{itemize}[-]
+    \item Tutte le curve hanno lo stesso andamento quadratico.
+    \item Alcuni gruppi si discostano molto dalla media generale.
 \end{itemize}
 
 \subsubsection*{Punto b)}
+Nel codice seguente impostiamo i parametri delle a priori semiconiugate per theta, Sigma e sigma2 come richiesto.
 \begin{lstlisting}[style=R]
-#Setting delle prior: impostiamo le prior semiconiugate per theta, Sigma e sigma2 come richiesto. Ricordiamo che le prior sono specificate in ottica empirico-bayesiana e che quindi l' analisi non combina le informazioni a priori con quelle a posteriori ma puo' essere all' incirca interpretata come quella di un individuo con informazione debole, ma non distorta.
 theta<-BETA.OLS.MEAN; Sigma<-cov(BETA.OLS) ; sigma2<-mean(S2.OLS)
 eta0 <-4; S0<-Sigma
 mu0<-theta ; L0<-Sigma
@@ -291,9 +355,7 @@ v0<-2; sigma20<-sigma2
 \end{lstlisting}
 
 \subsubsection*{Punto c)}
-Impostiamo come richiesto un Gibbs sampler: infatti è possibile approssimare in questo modo la distribuzione a posteriori dal momento che usiamo prior semiconiugate. 
-Per le distribuzioni full conditional si veda il quaderno.
-
+Impostiamo adesso i parametri delle a priori ed un Gibbs sampler, inizializ\-zando, in ordine, il numero di simulazioni, i valori iniziali dei parametri, e le strutture dati che serviranno per salvare i valori campionati dalle full conditional.
 \begin{lstlisting}[style=R]
 nsimul=10000
 beta<-BETA.OLS
@@ -348,10 +410,6 @@ curve (mean(THETA.POST[, 1]) + mean(THETA.POST[, 2]) * x + mean(THETA.POST[, 3])
 Osservando i due grafici a confronto si nota che il modello gerarchico permette 
 di trarre informazioni dai gruppi, 
 riportando le curve di regressione lungo la media. 
-In particolare vediamo adesso che l'andamento delle curve è ancora più simile 
-rispetto al caso OLS e che per valori più grandi del range di x il valore 
-atteso del raccolto è sì sempre più basso in alcuni casi e sempre più alto in 
-altri rispetto alla media, ma con un'intensità minore. 
 Dal momento che lavoriamo con gruppi tutti di piccola numerosità c'è una grande 
 variabilità nelle stime OLS mentre nel caso del modello gerarchico i gruppi si 
 influenzano in termini di informazioni e per l'effetto di shrinkage la stima OLS 
@@ -363,6 +421,7 @@ la stessa numerosità campionaria.
     \caption{ GLMM: stime dei minimi quadrati e stime bayesiane a confronto.}
 \end{figure}
 \newpage
+Controlliamo adesso la convergenza dell'algoritmo.
 {
 \color{red}
 \begin{Verbatim}
@@ -374,9 +433,8 @@ theta1   theta2   theta3
 }
 
 \subsubsection*{Punto d)}
+Approssimazione delle distribuzioni a priori tramite simulazione Monte Carlo
 \begin{lstlisting}[style=R]
-#Approssimazione delle distribuzioni a priori tramite simulazione Monte Carlo ( facciamo notare che potremmo derivarle anche analiticamente ):
-
 n<-10000
 
 THETA.PRIOR<-rmvnorm(n,mu0,L0) ; colnames (THETA.PRIOR)<-colnames (THETA.POST)
@@ -410,7 +468,6 @@ SIGMA.PRIOR<-rinvwish(n, eta0, solve( S0 ) )
 
 \begin{lstlisting}[style=R]
 #A priori e a posteriori di theta a confronto ( plot ):
-
 par (mfrow = c(2, 2))
 for (i in 1:3) {
   plot (density (THETA.POST[, i]), xlab = paste (" theta ", i), main = "", col = "deeppink")
@@ -429,7 +486,7 @@ Si osserva che le distribuzioni a posteriori, pur essendo centrate sulla stessa
 media delle a priori (come ci aspettavamo dal momento che abbiamo centrato le 
 prior nelle stime di massima verosimiglianza ), sono meno diffuse: 
 in questo modo l'informazione a posteriori cambia nel senso che si dà maggiore 
-probabilità ai valori che cadono attorno ad essi.
+probabilità ai valori che cadono attorno ad essa.
 
 \begin{lstlisting}[style=R]
 #Prior e posterior di Sigma a confronto ( plot ):
@@ -442,18 +499,20 @@ for (i in 1:3) {
 }
 \end{lstlisting}
 
-N.B. Abbiamo preso il logaritmo degli elementi di Sigma dal momento che sono valori 
-molto bassi. N.B. Dal momento che è richiesto di commentare la variabilita' 
+Abbiamo preso il logaritmo degli elementi di Sigma dal momento che sono valori 
+molto bassi. Dal momento che è richiesto di commentare la variabilitàa 
 relativa all' intercetta e alle pendenze nei gruppi, 
 riportiamo i plot delle distribuzioni dei soli elementi della diagonale principale di 
 Sigma. 
 
-Commento al plot: è evidenza che la variabilità tra i gruppi delle intercette non è 
-molto elevata, ma diminuisce ancora per il primo e per il secondo coefficiente 
-(ricordiamo che dal momento che consideriamo il logaritmo delle varianze la 
-variabilità è minore è indicata da una densità concentrata su valori sempre più 
-negativi.
+La variabilità tra i gruppi delle intercette non è 
+molto elevata, ma diminuisce ancora per il primo e per il secondo coefficiente.
 
+\begin{figure}
+  \centering
+  \includegraphics[totalheight=8.5cm]{img/esercizio11-2-4.png}
+  \caption{  Densità a priori e a posteriori a confronto (variabilità e covariabilità).}
+\end{figure}
 
 \subsubsection*{Punto e)}
 Si vuole trovare la densità di piante che massimizza il raccolto atteso 
@@ -471,16 +530,16 @@ Anche in questo caso vogliamo tenere in considerazione la variabilità tra lotti
 questo approssimiamo le distribuzioni usando la predittiva a posteriori dei 
 coefficienti di regressione appena discussa. Cerchiamo il valore atteso di y date 
 le y passate e le x. Un modo per farlo è campionare i beta dalla loro posterior 
-predictive e capionare le y dati i valori della x e quindi per ogni valore della x 
+predictive e campionare le y dati i valori della x e quindi per ogni valore della x 
 potevamo avere un valore atteso. Facciamo la media delle distribuzioni dei valori 
 attesi. Campioniamo i beta tilde: i beta per un gruppo futuro. Per ogni valore di 
 questo beta campinato abbiamo un valore del valore atteso per un y futuro. 
 Alla fine per ogni x si genera una distribuzione del valore atteso della y futuro 
 (4 vettori ). Confrontiamo le 4 distribuzioni ( per es con la media o vedendo la 
-prob. che una sia maggiore dell'altra ). Prendendo il valore medio per ogni valore 
-di beta tilde e per l' ixmax e la varianza a posteriori campiono un valore y. 
+probabilità che una sia maggiore dell'altra ). Prendendo il valore medio per ogni valore 
+di beta tilde e per x e la varianza a posteriori campiono un valore y. 
 Così si incorpora anche l'incertezza derivante dai gruppi.
-
+\newpage
 \begin{lstlisting}[style=R]
 x0<-c (2,4,6,8)
 raccolto<-NULL
@@ -490,13 +549,6 @@ for ( i in x0){
 }
 colnames ( raccolto )<-x0
 \end{lstlisting}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[totalheight=10cm]{img/esercizio11-2-4.png}
-    \caption{  Densità a priori e a posteriori a confronto (variabilità e covariabilità).}
-\end{figure}
 
 {
 \color{red}
@@ -512,11 +564,9 @@ colnames ( raccolto )<-x0
 [6,] 6.247427 7.685203 7.955526 7.058398
 \end{Verbatim}
 }
-
+Confrontiamo adesso le quattro distribuzioni dei valori attesi,
+graficamente e con un indice sintetico, la media:
 \begin{lstlisting}[style=R]
-#Confrontiamo adesso le quattro distribuzioni dei valori attesi,
-#graficamente e con un indice sintetico, la media:
-
 par (mfrow = c (1, 1))
 hist (raccolto [, 1], prob = T, main = "Raccolto atteso a posteriori ", xlab = "Raccolto ", xlim = c (2, 13), ylim = c (0, 1.5), col = "deepskyblue")
 lines (density (raccolto [, 1]), col = "deepskyblue")
@@ -544,7 +594,7 @@ legend ("topright",legend = c("x=2", "x=4", "x=6", "x=8"),col = c("deepskyblue",
     \caption{  Valori attesi a posteriori per più valori di x a confronto.}
 \end{figure}
 
-Si osserva che il valore della covariata che masimizza il raccolto atteso per un 
+Si osserva che il valore della covariata che massimizza il raccolto atteso per un 
 generico lotto è x=6. Procediamo quindi considerando tale valore per il predittore 
 lineare. Si vuole infine approssimare la distribuzione predittiva a posteriori per 
 un generico lotto avendo una densità di piantagioni pari a 6. La logica è la stessa 
